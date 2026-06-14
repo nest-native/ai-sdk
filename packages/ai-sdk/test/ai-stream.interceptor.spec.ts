@@ -8,7 +8,12 @@ import {
 import { Reflector } from '@nestjs/core';
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { AiStreamInterceptor } from '../ai-stream.interceptor';
-import { AiModuleOptions, AiStreamOptions, AiStreamResult } from '../interfaces';
+import {
+  AiModuleOptions,
+  AiStreamOptions,
+  AiStreamResponseInit,
+  AiStreamResult,
+} from '../interfaces';
 
 interface PipeCall {
   response: unknown;
@@ -213,5 +218,75 @@ describe('AiStreamInterceptor', () => {
     );
 
     assert.deepEqual(uiCalls[0]?.init, {});
+  });
+
+  it('forwards the method-level onError mapper to the init', async () => {
+    const response = new FakeResponse();
+    const { result, uiCalls } = createResult(response);
+    const onError = (error: unknown) => `method: ${String(error)}`;
+    const interceptor = buildInterceptor({ onError });
+
+    await lastValueFrom(
+      interceptor.intercept(
+        createContext(response),
+        createCallHandler(result),
+      ),
+    );
+
+    assert.equal((uiCalls[0]?.init as AiStreamResponseInit).onError, onError);
+  });
+
+  it('falls back to the module-level onError when the method has none', async () => {
+    const response = new FakeResponse();
+    const { result, uiCalls } = createResult(response);
+    const onError = (error: unknown) => `module: ${String(error)}`;
+    const interceptor = buildInterceptor({}, { onError });
+
+    await lastValueFrom(
+      interceptor.intercept(
+        createContext(response),
+        createCallHandler(result),
+      ),
+    );
+
+    assert.equal((uiCalls[0]?.init as AiStreamResponseInit).onError, onError);
+  });
+
+  it('prefers the method-level onError over the module-level default', async () => {
+    const response = new FakeResponse();
+    const { result, uiCalls } = createResult(response);
+    const methodOnError = (error: unknown) => `method: ${String(error)}`;
+    const moduleOnError = (error: unknown) => `module: ${String(error)}`;
+    const interceptor = buildInterceptor(
+      { onError: methodOnError },
+      { onError: moduleOnError },
+    );
+
+    await lastValueFrom(
+      interceptor.intercept(
+        createContext(response),
+        createCallHandler(result),
+      ),
+    );
+
+    assert.equal(
+      (uiCalls[0]?.init as AiStreamResponseInit).onError,
+      methodOnError,
+    );
+  });
+
+  it('omits onError from the init when neither level configures it', async () => {
+    const response = new FakeResponse();
+    const { result, uiCalls } = createResult(response);
+    const interceptor = buildInterceptor({});
+
+    await lastValueFrom(
+      interceptor.intercept(
+        createContext(response),
+        createCallHandler(result),
+      ),
+    );
+
+    assert.equal('onError' in (uiCalls[0]?.init as object), false);
   });
 });

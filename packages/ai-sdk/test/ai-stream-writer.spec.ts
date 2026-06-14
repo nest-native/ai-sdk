@@ -210,6 +210,62 @@ describe('writeAiStreamToResponse', () => {
     await completion;
   });
 
+  it('forwards onError to the UI message stream', async () => {
+    const { result, calls } = createUiResult();
+    const response = new FakeResponse();
+    const onError = (error: unknown) => `mapped: ${String(error)}`;
+
+    const completion = writeAiStreamToResponse(
+      result,
+      response as unknown as ServerResponse,
+      'ui-message',
+      { onError },
+    );
+
+    assert.deepEqual(calls[0]?.init, { onError });
+    response.finish();
+    await completion;
+  });
+
+  it('strips onError for the text format and keeps status/headers', async () => {
+    const { result, calls } = createTextResult();
+    const response = new FakeResponse();
+    const onError = (error: unknown) => `mapped: ${String(error)}`;
+
+    const completion = writeAiStreamToResponse(
+      result,
+      response as unknown as ServerResponse,
+      'text',
+      { status: 202, headers: { 'x-ai': 'on' }, onError },
+    );
+
+    // The text protocol has no error frame, so the writer must not forward
+    // onError; the status and headers still go through.
+    assert.deepEqual(calls[0]?.init, {
+      status: 202,
+      headers: { 'x-ai': 'on' },
+    });
+    response.finish();
+    await completion;
+  });
+
+  it('passes an empty init to the text stream when nothing is configured', async () => {
+    const { result, calls } = createTextResult();
+    const response = new FakeResponse();
+    const onError = (error: unknown) => `mapped: ${String(error)}`;
+
+    const completion = writeAiStreamToResponse(
+      result,
+      response as unknown as ServerResponse,
+      'text',
+      { onError },
+    );
+
+    assert.deepEqual(calls[0]?.init, {});
+    response.finish();
+    await completion;
+  });
+
   it('throws when ui-message is requested but the method is missing', () => {
     const { result } = createTextResult();
     const response = new FakeResponse();
