@@ -151,4 +151,13 @@ export interface AiPlatformResponse {
    * Fastify exposes the raw Node response here. Express omits it.
    */
   raw?: ServerResponse;
+
+  /**
+   * Fastify's `reply.hijack()`. Calling it tells Fastify to relinquish control
+   * of the response lifecycle so the AI SDK can own the raw socket. Without it,
+   * Fastify still tries to send its own reply after the stream — which throws
+   * `ERR_HTTP_HEADERS_SENT` when the client disconnects mid-stream. Express has
+   * no equivalent (and omits this), so the writer calls it only when present.
+   */
+  hijack?: () => void;
 }

@@ -119,19 +119,47 @@ describe('writeAiStreamToResponse', () => {
     await completion;
   });
 
-  it('unwraps the Fastify raw response before piping', async () => {
+  it('unwraps the Fastify raw response and hijacks the reply before piping', async () => {
     const { result, calls } = createUiResult();
     const raw = new FakeResponse();
+    let hijacked = 0;
+    const reply = {
+      raw,
+      hijack: () => {
+        hijacked += 1;
+      },
+    };
 
     const completion = writeAiStreamToResponse(
       result,
-      { raw } as never,
+      reply as never,
       'ui-message',
       {},
     );
 
+    // The raw Node response is what gets piped, and Fastify is told to step
+    // back via hijack() so it does not also try to send its own reply.
     assert.equal(calls[0]?.response, raw);
+    assert.equal(hijacked, 1);
     raw.finish();
+    await completion;
+  });
+
+  it('does not call hijack on Express (no hijack present)', async () => {
+    const { result, calls } = createUiResult();
+    const response = new FakeResponse();
+
+    const completion = writeAiStreamToResponse(
+      result,
+      response as unknown as ServerResponse,
+      'ui-message',
+      {},
+    );
+
+    // Express returns the Node response directly; there is no hijack to call,
+    // and the writer must pipe to the response unchanged.
+    assert.equal(calls[0]?.response, response);
+    response.finish();
     await completion;
   });
 
