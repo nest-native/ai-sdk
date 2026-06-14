@@ -260,6 +260,7 @@ jobs:
           | `00-showcase` | `streamText` (mock model) | Guard, pipe, interceptor, exception filter |
           | `01-fastify-parity` | `streamText` (mock model) | Guard, pipe, exception filter on Express + Fastify |
           | `02-abort-signal` | `streamText` + `@AiAbortSignal` (mock model) | Pipe + mid-stream disconnect cancellation on Express + Fastify |
+          | `03-error-mapping` | `streamText` (mock model) | Guard, pipe, exception filter (pre-stream HTTP errors) + in-stream `onError` frame mapping on Express + Fastify |
 
           Samples never call a real model provider, so no API keys are used.
           EOF
