@@ -8,8 +8,20 @@ package release is useful for users.
 
 ## Unreleased
 
+## 0.1.0 - 2026-06-14
+
+First user-facing release. The full v1 surface — `@AiStream`, `@AiAbortSignal`,
+and `AiModule` — ships on both Express and Fastify, with a documentation site.
+
 ### Added
 
+- Documentation site (Docusaurus) under `website/`, mirroring the sibling
+  `@nest-native` packages: getting-started, core-API (`@AiStream`,
+  `@AiAbortSignal`, error mapping, stream formats, API reference), migration,
+  production (patterns, security, adapters), sample catalog, and project-reference
+  pages. CI gains a `docs-site` build job, the root `ci`/`security:audit` scripts
+  gain `ci:docs`/`security:audit:docs`, and a `deploy-docs.yml` workflow publishes
+  the site to GitHub Pages on pushes to `main`.
 - `@AiStream()` method decorator: turns a Nest HTTP handler into an AI SDK
   streaming endpoint on Express while preserving the full enhancer pipeline.
   Guards, pipes, interceptors, and exception filters all run before the stream
