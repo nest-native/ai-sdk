@@ -16,8 +16,9 @@
 > disconnects mid-stream, pre-stream vs in-stream errors are mapped correctly,
 > and samples cover `streamText`, `streamObject`, and the v5 generative-UI
 > equivalent of `streamUI`. The workspace builds, typechecks, tests at 100%
-> coverage, and is CI-green. The migration guide and documentation site arrive
-> in later milestones. Do not depend on this in production yet.
+> coverage, and is CI-green. A [migration guide](MIGRATION.md) ports the official
+> AI SDK NestJS cookbook recipe to `@AiStream`; the documentation site arrives in
+> the next milestone. Do not depend on this in production yet.
 
 ## What This Is
 
@@ -68,6 +69,8 @@ This repository contains:
 
 - [`packages/ai-sdk`](packages/ai-sdk): the `@nest-native/ai-sdk` integration package
 - [`sample`](sample): runnable samples, starting with [`sample/00-showcase`](sample/00-showcase)
+- [`MIGRATION.md`](MIGRATION.md): step-by-step guide from the official cookbook's
+  raw `@Res()` + `pipe*ToResponse` recipe to `@AiStream`
 - [`scripts`](scripts): quality, coverage, complexity, and release-check helpers
 - [`CONTRIBUTING.md`](CONTRIBUTING.md): contributor workflow, including the
   sample/library PR separation rule
@@ -179,8 +182,8 @@ npm run ci
 3. Fastify parity.
 4. `@AiAbortSignal` + real disconnect test.
 5. Pre-stream vs in-stream error mapping.
-6. `streamObject` + `streamUI` samples.
-7. Migration guide from raw `@Res()` piping.
+6. ~~`streamObject` + `streamUI` samples.~~ ✅
+7. ~~Migration guide from raw `@Res()` piping.~~ ✅
 8. Documentation site. Release `v0.1`.
 
 See [CHANGELOG.md](CHANGELOG.md) for what has landed.
