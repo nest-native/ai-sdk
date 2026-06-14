@@ -5,7 +5,8 @@
   "description": "Community standalone monorepo for @nest-native/ai-sdk",
   "license": "MIT",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "sample/*"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
@@ -17,10 +18,15 @@
     "complexity:check": "eslint --config eslint.complexity-check.config.mjs \"packages/ai-sdk/**/*.ts\"",
     "complexity:report": "node scripts/collect-cognitive-complexity.mjs",
     "release:check:readme-links": "node scripts/check-readme-links.mjs",
+    "release:check:sample-versions": "node scripts/check-sample-version-sync.mjs",
     "release:check:pack": "npm run build --workspace @nest-native/ai-sdk && node scripts/check-package-pack.mjs",
-    "release:check": "npm run release:check:readme-links && npm run release:check:pack",
+    "release:check": "npm run release:check:readme-links && npm run release:check:sample-versions && npm run release:check:pack",
     "security:audit": "npm audit --audit-level=high",
-    "ci": "npm run typecheck && npm run test:cov && npm run complexity:check && npm run complexity:report && npm run release:check && npm run security:audit"
+    "showcase": "node scripts/run-optional-workspace.cjs nest-native-ai-sdk-showcase test",
+    "sample:focused": "node scripts/run-focused-samples.mjs",
+    "sample": "npm run showcase && npm run sample:focused",
+    "ci:sample": "npm run sample",
+    "ci": "npm run typecheck && npm run test:cov && npm run complexity:check && npm run complexity:report && npm run release:check && npm run security:audit && npm run ci:sample"
   },
   "engines": {
     "node": ">=20"
@@ -29,12 +35,15 @@
     "enabled": false
   },
   "devDependencies": {
+    "@ai-sdk/provider": "^2.0.0",
     "@nestjs/common": "^11.1.26",
     "@nestjs/core": "^11.1.26",
+    "@nestjs/platform-express": "^11.1.26",
     "@nestjs/testing": "^11.1.26",
+    "@types/express": "^5.0.0",
     "@types/node": "^25.6.0",
     "@typescript-eslint/parser": "^8.59.0",
-    "ai": "^6",
+    "ai": "^5",
     "c8": "^11.0.0",
     "eslint": "^10.4.0",
     "eslint-plugin-sonarjs": "^4.0.3",
