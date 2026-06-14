@@ -12,8 +12,10 @@
 > results on **both Express and Fastify** while keeping the Nest enhancer
 > pipeline intact, `@AiAbortSignal` cancels the AI SDK call when the client
 > disconnects mid-stream, and pre-stream vs in-stream errors are mapped
-> correctly (HTTP errors vs documented stream error frames). The `streamObject` /
-> `streamUI` samples land in later milestones. Do not depend on this in
+> correctly (HTTP errors vs documented stream error frames). Samples cover
+> `streamText`, `streamObject`, and the v5 generative-UI equivalent of
+> `streamUI` (custom data parts via `createUIMessageStream`). The migration guide
+> and documentation site land in later milestones. Do not depend on this in
 > production yet.
 
 ## What This Is
@@ -106,6 +108,23 @@ chatText(@Body() body: ChatDto) {
 Method-level `headers` merge over the module's `defaultHeaders` (method keys
 win). Guards, pipes, and exception filters all run ahead of the stream, so
 pre-stream rejections surface as ordinary HTTP responses.
+
+### Stream types
+
+`@AiStream` serializes any AI SDK result that exposes a `pipe*ToResponse`
+method, so the three v5 streaming shapes all work through the same decorator:
+
+- **`streamText`** — the default `ui-message` format
+  (`pipeUIMessageStreamToResponse()`). See `sample/00-showcase`.
+- **`streamObject`** — streams a structured object as partial-JSON text deltas.
+  Its result exposes only `pipeTextStreamToResponse`, so serve it with
+  `@AiStream({ format: 'text' })`. See
+  [`sample/04-stream-object`](../../sample/04-stream-object/README.md).
+- **`streamUI` (v5 equivalent)** — `ai/rsc`'s `streamUI` was removed in v5. The
+  supported replacement is a UI message stream with custom `data-*` parts built
+  via `createUIMessageStream`; wrap the returned `ReadableStream` so it exposes
+  `pipeUIMessageStreamToResponse` and serve it with the default `@AiStream()`.
+  See [`sample/05-stream-ui`](../../sample/05-stream-ui/README.md).
 
 ### Express and Fastify
 

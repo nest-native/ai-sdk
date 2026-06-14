@@ -12,11 +12,12 @@
 > [!WARNING]
 > **Status: pre-release / under construction.** `@AiStream` streams AI SDK
 > results on **both Express and Fastify** while preserving the full Nest
-> enhancer pipeline, and `@AiAbortSignal` cancels the AI SDK call when the client
-> disconnects mid-stream. The workspace builds, typechecks, tests at 100%
-> coverage, and is CI-green. Full error-mapping and the `streamObject` /
-> `streamUI` samples arrive in later milestones. Do not depend on this in
-> production yet.
+> enhancer pipeline, `@AiAbortSignal` cancels the AI SDK call when the client
+> disconnects mid-stream, pre-stream vs in-stream errors are mapped correctly,
+> and samples cover `streamText`, `streamObject`, and the v5 generative-UI
+> equivalent of `streamUI`. The workspace builds, typechecks, tests at 100%
+> coverage, and is CI-green. The migration guide and documentation site arrive
+> in later milestones. Do not depend on this in production yet.
 
 ## What This Is
 
