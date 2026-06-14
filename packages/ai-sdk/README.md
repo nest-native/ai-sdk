@@ -9,9 +9,9 @@
 
 > [!WARNING]
 > **Status: pre-release / under construction.** `@AiStream` now streams AI SDK
-> results on Express while keeping the Nest enhancer pipeline intact. Fastify
-> parity, `@AiAbortSignal`, full error-mapping, and the `streamObject` /
-> `streamUI` samples land in later milestones. Do not depend on this in
+> results on **both Express and Fastify** while keeping the Nest enhancer
+> pipeline intact. `@AiAbortSignal`, full error-mapping, and the `streamObject`
+> / `streamUI` samples land in later milestones. Do not depend on this in
 > production yet.
 
 ## What This Is
@@ -32,7 +32,7 @@ SDK call.
 | Node.js | `>=20` |
 | NestJS | `11.x` |
 | Vercel AI SDK (`ai`) | `^5` (pin major; pre-v5 not supported) |
-| HTTP adapter | Express and Fastify (parity is a project goal) |
+| HTTP adapter | Express and Fastify (parity shipped and tested) |
 
 The published package has no runtime dependencies. The Vercel AI SDK and the
 NestJS packages are declared as `peerDependencies`, so applications install only
@@ -104,6 +104,22 @@ chatText(@Body() body: ChatDto) {
 Method-level `headers` merge over the module's `defaultHeaders` (method keys
 win). Guards, pipes, and exception filters all run ahead of the stream, so
 pre-stream rejections surface as ordinary HTTP responses.
+
+### Express and Fastify
+
+The same handler works on either adapter — `@AiStream` writes to the underlying
+Node `ServerResponse` (Express exposes it directly; Fastify exposes it via
+`reply.raw`), so you do not touch the raw response yourself. The only difference
+is the adapter you pass to `NestFactory.create`:
+
+```ts
+import { FastifyAdapter } from '@nestjs/platform-fastify';
+
+const app = await NestFactory.create(AppModule, new FastifyAdapter());
+```
+
+See [`sample/01-fastify-parity`](../../sample/01-fastify-parity/README.md) for
+the same controller streaming identically on both adapters.
 
 ## Links
 
