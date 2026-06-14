@@ -21,6 +21,14 @@ package release is useful for users.
 - `sample/00-showcase`: a full Express showcase wiring a guard, a Zod
   validation pipe, an interceptor, and an exception filter around `@AiStream`,
   with a smoke test asserting guard/pipe/filter/stream behavior.
+- Express **and Fastify** adapter parity for `@AiStream`. The package writes to
+  the underlying Node `ServerResponse` (Express exposes it directly; Fastify via
+  `reply.raw`), so the same handler streams identically on both adapters.
+- `sample/01-fastify-parity`: mounts one controller (guard + Zod pipe +
+  exception filter) on both an Express app and a Fastify app, with a smoke test
+  that boots both adapters and asserts the streamed payloads match byte-for-byte.
+- Package-level end-to-end coverage on Fastify mirroring the Express e2e suite
+  (pre-stream guard rejection, text + UI message streams, pre-stream filter).
 - CI `samples` job and `release:check:sample-versions` to validate samples and
   keep their `@nest-native/ai-sdk` version pinned to the package version.
 

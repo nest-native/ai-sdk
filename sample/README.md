@@ -3,8 +3,10 @@
 The sample tree follows the same shape as the main quality strategy:
 
 - `00-showcase`: the full integration baseline.
-- `01-*` onward: focused samples that isolate one topic each (added in later
-  milestones).
+- `01-fastify-parity`: one controller on both Express and Fastify, proving
+  adapter parity for `@AiStream` and the enhancer pipeline.
+- `02-*` onward: more focused samples that isolate one topic each (added in
+  later milestones).
 
 ## Commands
 
