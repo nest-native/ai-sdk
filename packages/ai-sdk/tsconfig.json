@@ -8,6 +8,10 @@
   },
   "include": [
     "ai.module.ts",
+    "ai-stream.interceptor.ts",
+    "ai-stream-writer.ts",
+    "constants.ts",
+    "decorators/ai-stream.decorator.ts",
     "index.ts",
     "interfaces.ts"
   ],
