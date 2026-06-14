@@ -12,7 +12,7 @@
     "start:fastify": "ts-node --transpile-only src/main-fastify.ts"
   },
   "dependencies": {
-    "@nest-native/ai-sdk": "0.0.0",
+    "@nest-native/ai-sdk": "0.1.0",
     "@nestjs/common": "11.1.26",
     "@nestjs/core": "11.1.26",
     "@nestjs/platform-express": "11.1.26",

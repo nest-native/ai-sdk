@@ -7,17 +7,16 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Package License" /></a>
 </p>
 
-> [!WARNING]
-> **Status: pre-release / under construction.** `@AiStream` streams AI SDK
-> results on **both Express and Fastify** while keeping the Nest enhancer
-> pipeline intact, `@AiAbortSignal` cancels the AI SDK call when the client
-> disconnects mid-stream, and pre-stream vs in-stream errors are mapped
-> correctly (HTTP errors vs documented stream error frames). Samples cover
-> `streamText`, `streamObject`, and the v5 generative-UI equivalent of
-> `streamUI` (custom data parts via `createUIMessageStream`), and a
-> [migration guide](../../MIGRATION.md) ports the official AI SDK NestJS cookbook
-> recipe to `@AiStream`. The documentation site lands in the next milestone. Do
-> not depend on this in production yet.
+> [!NOTE]
+> **Status: `0.1.0` — v1 surface complete.** `@AiStream` streams AI SDK results on
+> **both Express and Fastify** while keeping the Nest enhancer pipeline intact,
+> `@AiAbortSignal` cancels the AI SDK call when the client disconnects mid-stream,
+> and pre-stream vs in-stream errors are mapped correctly (HTTP errors vs
+> documented stream error frames). Samples cover `streamText`, `streamObject`, and
+> the v5 generative-UI equivalent of `streamUI` (custom data parts via
+> `createUIMessageStream`), a [migration guide](../../MIGRATION.md) ports the
+> official AI SDK NestJS cookbook recipe to `@AiStream`, and full
+> [documentation](https://nest-native.github.io/ai-sdk/) is published.
 
 ## What This Is
 
@@ -226,6 +225,7 @@ byte-identical.
 
 ## Links
 
+- Documentation: [nest-native.github.io/ai-sdk](https://nest-native.github.io/ai-sdk/)
 - Source and issues: [github.com/nest-native/ai-sdk](https://github.com/nest-native/ai-sdk)
 - Migration guide: [MIGRATION.md](../../MIGRATION.md)
 - Changelog: [CHANGELOG.md](../../CHANGELOG.md)
