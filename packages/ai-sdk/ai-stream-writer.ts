@@ -25,6 +25,26 @@ export function resolveServerResponse(
 }
 
 /**
+ * Hand the response lifecycle over to the AI SDK on adapters that need it.
+ *
+ * Fastify's `FastifyReply` keeps owning the response after the handler returns,
+ * so once the AI SDK writes to `reply.raw` directly Fastify will *also* try to
+ * send its own reply — which throws `ERR_HTTP_HEADERS_SENT`, most visibly when
+ * the client disconnects mid-stream. Calling `reply.hijack()` tells Fastify to
+ * step back. Express returns the Node response directly and has no `hijack`, so
+ * this is a no-op there.
+ */
+function hijackIfSupported(
+  response: AiPlatformResponse | ServerResponse,
+): void {
+  const hijack = (response as AiPlatformResponse).hijack;
+
+  if (typeof hijack === 'function') {
+    hijack.call(response);
+  }
+}
+
+/**
  * Type guard that ensures the handler returned an AI SDK stream result (or a
  * promise of one) rather than an arbitrary value.
  *
@@ -65,6 +85,8 @@ export function writeAiStreamToResponse(
 ): Promise<void> {
   const serverResponse = resolveServerResponse(response);
   const completion = awaitResponseCompletion(serverResponse);
+
+  hijackIfSupported(response);
 
   if (format === 'text') {
     writeTextStream(result, serverResponse, init);

@@ -5,7 +5,10 @@ The sample tree follows the same shape as the main quality strategy:
 - `00-showcase`: the full integration baseline.
 - `01-fastify-parity`: one controller on both Express and Fastify, proving
   adapter parity for `@AiStream` and the enhancer pipeline.
-- `02-*` onward: more focused samples that isolate one topic each (added in
+- `02-abort-signal`: `@AiAbortSignal()` forwarding the client-disconnect signal
+  into the AI SDK call, with a smoke test that disconnects mid-stream and
+  asserts the model call is cancelled on both adapters.
+- `03-*` onward: more focused samples that isolate one topic each (added in
   later milestones).
 
 ## Commands

@@ -8,11 +8,11 @@
 </p>
 
 > [!WARNING]
-> **Status: pre-release / under construction.** `@AiStream` now streams AI SDK
+> **Status: pre-release / under construction.** `@AiStream` streams AI SDK
 > results on **both Express and Fastify** while keeping the Nest enhancer
-> pipeline intact. `@AiAbortSignal`, full error-mapping, and the `streamObject`
-> / `streamUI` samples land in later milestones. Do not depend on this in
-> production yet.
+> pipeline intact, and `@AiAbortSignal` cancels the AI SDK call when the client
+> disconnects mid-stream. Full error-mapping and the `streamObject` / `streamUI`
+> samples land in later milestones. Do not depend on this in production yet.
 
 ## What This Is
 
@@ -120,6 +120,35 @@ const app = await NestFactory.create(AppModule, new FastifyAdapter());
 
 See [`sample/01-fastify-parity`](../../sample/01-fastify-parity/README.md) for
 the same controller streaming identically on both adapters.
+
+### Cancel on disconnect with `@AiAbortSignal`
+
+When a client disconnects mid-stream you usually want to stop generating — the
+tokens go nowhere, but the provider keeps billing. `@AiAbortSignal()` injects an
+`AbortSignal` derived from the client's connection; forward it into your AI SDK
+call and a disconnect tears the upstream model request down immediately:
+
+```ts
+import { AiAbortSignal, AiStream } from '@nest-native/ai-sdk';
+import { Body, Controller, Post } from '@nestjs/common';
+import { streamText } from 'ai';
+
+@Controller('chat')
+export class ChatController {
+  @Post()
+  @AiStream()
+  chat(@Body() body: ChatDto, @AiAbortSignal() signal: AbortSignal) {
+    return streamText({ model, prompt: body.prompt, abortSignal: signal });
+  }
+}
+```
+
+The signal is derived from the underlying Node response, so it works identically
+on Express and Fastify, and it is memoized per request — declaring
+`@AiAbortSignal()` more than once yields the same signal. See
+[`sample/02-abort-signal`](../../sample/02-abort-signal/README.md) for a smoke
+test that disconnects mid-stream and asserts the model call is cancelled on both
+adapters.
 
 ## Links
 
