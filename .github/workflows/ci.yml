@@ -258,6 +258,7 @@ jobs:
           | Sample | AI SDK call | Enhancers exercised |
           | :--- | :--- | :--- |
           | `00-showcase` | `streamText` (mock model) | Guard, pipe, interceptor, exception filter |
+          | `01-fastify-parity` | `streamText` (mock model) | Guard, pipe, exception filter on Express + Fastify |
 
           Samples never call a real model provider, so no API keys are used.
           EOF
