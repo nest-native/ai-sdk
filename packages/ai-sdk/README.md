@@ -8,10 +8,11 @@
 </p>
 
 > [!WARNING]
-> **Status: scaffold / under construction.** This is the `v0.0.1-scaffold`
-> bootstrap. Only `AiModule.forRoot()` / `AiModule.forRootAsync()` exist today.
-> The streaming decorators (`@AiStream`, `@AiAbortSignal`, `@AiContext`) land in
-> later milestones. Do not depend on this in production yet.
+> **Status: pre-release / under construction.** `@AiStream` now streams AI SDK
+> results on Express while keeping the Nest enhancer pipeline intact. Fastify
+> parity, `@AiAbortSignal`, full error-mapping, and the `streamObject` /
+> `streamUI` samples land in later milestones. Do not depend on this in
+> production yet.
 
 ## What This Is
 
@@ -49,7 +50,11 @@ Required peers:
 npm i @nestjs/common @nestjs/core reflect-metadata rxjs
 ```
 
-## Usage (scaffold)
+## Usage
+
+Register the module once, then decorate a handler with `@AiStream`. The handler
+returns an AI SDK stream result (for example from `streamText`); the decorator
+wires it to the active HTTP adapter's response.
 
 ```ts
 import { Module } from '@nestjs/common';
@@ -64,6 +69,41 @@ import { AiModule } from '@nest-native/ai-sdk';
 })
 export class AppModule {}
 ```
+
+```ts
+import { AiStream } from '@nest-native/ai-sdk';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { streamText } from 'ai';
+
+@Controller('chat')
+export class ChatController {
+  @Post()
+  @AiStream()
+  @UseGuards(ApiKeyGuard)
+  chat(@Body() body: ChatDto) {
+    // ApiKeyGuard runs BEFORE the stream opens, so a rejection is an HTTP
+    // 401/403 — never an SSE error frame.
+    return streamText({ model, prompt: body.prompt });
+  }
+}
+```
+
+`@AiStream` serializes to the AI SDK UI message protocol by default
+(`pipeUIMessageStreamToResponse()`), the format `@ai-sdk/react`'s `useChat`
+consumes. Pass `format: 'text'` for a plain text delta stream, or set `headers`
+/ `status` per route:
+
+```ts
+@Post('text')
+@AiStream({ format: 'text', headers: { 'x-stream': 'text' } })
+chatText(@Body() body: ChatDto) {
+  return streamText({ model, prompt: body.prompt });
+}
+```
+
+Method-level `headers` merge over the module's `defaultHeaders` (method keys
+win). Guards, pipes, and exception filters all run ahead of the stream, so
+pre-stream rejections surface as ordinary HTTP responses.
 
 ## Links
 

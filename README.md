@@ -6,16 +6,16 @@
   <a href="https://www.npmjs.com/package/@nest-native/ai-sdk"><img src="https://img.shields.io/npm/v/@nest-native/ai-sdk.svg" alt="NPM Version" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Package License" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Test Coverage" />
-  <img src="https://img.shields.io/badge/status-scaffold-orange.svg" alt="Status: scaffold" />
+  <img src="https://img.shields.io/badge/status-pre--release-orange.svg" alt="Status: pre-release" />
 </p>
 
 > [!WARNING]
-> **Status: scaffold / under construction.** This repository is at its bootstrap
-> milestone (`v0.0.1-scaffold`). The npm workspace builds, typechecks, tests at
-> 100% coverage, and is CI-green, but the public streaming API is not
-> implemented yet. Only `AiModule.forRoot()` / `AiModule.forRootAsync()` exist.
-> The `@AiStream`, `@AiAbortSignal`, and `@AiContext` primitives and the sample
-> catalog arrive in later milestones. Do not depend on this in production yet.
+> **Status: pre-release / under construction.** `@AiStream` now streams AI SDK
+> results on Express while preserving the full Nest enhancer pipeline, with a
+> showcase sample. The workspace builds, typechecks, tests at 100% coverage, and
+> is CI-green. Fastify parity, `@AiAbortSignal`, full error-mapping, and the
+> remaining samples arrive in later milestones. Do not depend on this in
+> production yet.
 
 ## What This Is
 
@@ -65,14 +65,15 @@ the ecosystems they actually use.
 This repository contains:
 
 - [`packages/ai-sdk`](packages/ai-sdk): the `@nest-native/ai-sdk` integration package
+- [`sample`](sample): runnable samples, starting with [`sample/00-showcase`](sample/00-showcase)
 - [`scripts`](scripts): quality, coverage, complexity, and release-check helpers
 - [`CONTRIBUTING.md`](CONTRIBUTING.md): contributor workflow, including the
   sample/library PR separation rule
 - [`CHANGELOG.md`](CHANGELOG.md): release history and unreleased changes
 - [`SECURITY.md`](SECURITY.md): vulnerability reporting and project security boundaries
 
-Samples and a documentation site are part of the public learning path and arrive
-in later milestones.
+A documentation site is part of the public learning path and arrives in a later
+milestone.
 
 ## Installation
 
@@ -93,10 +94,12 @@ npm i @nestjs/platform-express
 # or @nestjs/platform-fastify
 ```
 
-## Usage (scaffold)
+## Usage
 
-At this milestone the module only wires global configuration. The streaming
-decorators are not implemented yet.
+Register `AiModule`, then decorate a handler with `@AiStream`. The handler
+returns an AI SDK stream result (for example from `streamText`) and the
+decorator pipes it to the active HTTP adapter — guards, pipes, interceptors, and
+exception filters all run first.
 
 ```ts
 import { Module } from '@nestjs/common';
@@ -111,6 +114,27 @@ import { AiModule } from '@nest-native/ai-sdk';
 })
 export class AppModule {}
 ```
+
+```ts
+import { AiStream } from '@nest-native/ai-sdk';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { streamText } from 'ai';
+
+@Controller('chat')
+export class ChatController {
+  @Post()
+  @AiStream()
+  @UseGuards(ApiKeyGuard)
+  chat(@Body() body: ChatDto) {
+    // The guard runs before the stream opens — a rejection is HTTP 401/403,
+    // never an SSE error frame.
+    return streamText({ model, prompt: body.prompt });
+  }
+}
+```
+
+See [`sample/00-showcase`](sample/00-showcase) for a full Express example wiring
+a guard, a Zod pipe, an interceptor, and an exception filter around `@AiStream`.
 
 Async configuration is supported through `AiModule.forRootAsync()`:
 
@@ -146,10 +170,10 @@ npm run ci
 
 ## Status and Roadmap
 
-This is the bootstrap milestone. The planned path:
+`@AiStream` now streams on Express with a showcase sample. The planned path:
 
-1. **Bootstrap** — repo skeleton, empty package, CI green (this milestone).
-2. `@AiStream` skeleton on Express with a showcase sample.
+1. ~~**Bootstrap** — repo skeleton, empty package, CI green.~~ ✅
+2. ~~`@AiStream` skeleton on Express with a showcase sample.~~ ✅
 3. Fastify parity.
 4. `@AiAbortSignal` + real disconnect test.
 5. Pre-stream vs in-stream error mapping.
