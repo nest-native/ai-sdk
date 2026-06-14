@@ -8,7 +8,27 @@ package release is useful for users.
 
 ## Unreleased
 
-No user-facing changes yet.
+### Added
+
+- `@AiStream()` method decorator: turns a Nest HTTP handler into an AI SDK
+  streaming endpoint on Express while preserving the full enhancer pipeline.
+  Guards, pipes, interceptors, and exception filters all run before the stream
+  opens, so pre-stream rejections become HTTP errors (e.g. 401/403/429), never
+  SSE error frames.
+- `AiStreamOptions` with `format` (`'ui-message'` default, or `'text'`),
+  per-route `headers` (merged over `AiModuleOptions.defaultHeaders`, method keys
+  win), and `status`.
+- `sample/00-showcase`: a full Express showcase wiring a guard, a Zod
+  validation pipe, an interceptor, and an exception filter around `@AiStream`,
+  with a smoke test asserting guard/pipe/filter/stream behavior.
+- CI `samples` job and `release:check:sample-versions` to validate samples and
+  keep their `@nest-native/ai-sdk` version pinned to the package version.
+
+### Pinned
+
+- The Vercel AI SDK (`ai`) workspace dependency is pinned to `^5` per the
+  project constitution (`v5` is a hard requirement; pre-v5 unsupported). The v6
+  major reworks the language-model spec and is out of scope for this milestone.
 
 ## 0.0.0 - 2026-06-13
 
