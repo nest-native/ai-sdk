@@ -1,0 +1,113 @@
+name: Production/runtime issue
+description: Report a production-like problem with streaming, adapters, AbortSignal, deployment, or dependency updates.
+title: "prod: "
+labels:
+  - bug
+  - production
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for issues that appear in production, staging, CI, or production-like environments.
+
+        Do not paste secrets, API keys, production tokens, private certificates, customer data, or unredacted hostnames. Redact values before submitting.
+  - type: dropdown
+    id: production-area
+    attributes:
+      label: Production area
+      options:
+        - streaming lifecycle (@AiStream)
+        - pre-stream vs in-stream error mapping
+        - AbortSignal / client disconnect
+        - Express or Fastify adapter behavior
+        - guards/pipes/interceptors/filters interaction
+        - dependency update or supply-chain change
+        - release or package consumption
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: What failed, who is affected, and what workaround exists?
+      placeholder: "Client disconnect does not cancel the AI SDK call, so tokens keep billing."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction or failing flow
+      description: Link a reproduction repo or describe the smallest production-like flow that fails.
+    validations:
+      required: true
+  - type: input
+    id: package-version
+    attributes:
+      label: "@nest-native/ai-sdk version"
+      placeholder: "0.0.0"
+    validations:
+      required: true
+  - type: input
+    id: nest-version
+    attributes:
+      label: NestJS version
+      placeholder: "11.x"
+    validations:
+      required: true
+  - type: input
+    id: ai-version
+    attributes:
+      label: Vercel AI SDK (ai) version
+      placeholder: "5.x"
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js version
+      placeholder: "20.x, 22.x, 24.x"
+    validations:
+      required: true
+  - type: input
+    id: adapter
+    attributes:
+      label: HTTP adapter and version
+      placeholder: "@nestjs/platform-express 11.x or @nestjs/platform-fastify 11.x"
+    validations:
+      required: true
+  - type: textarea
+    id: module-setup
+    attributes:
+      label: AiModule setup
+      description: Paste the relevant forRoot/forRootAsync shape with secrets redacted.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: stream-setup
+    attributes:
+      label: Streaming setup
+      description: Mention the AI SDK call (streamText, streamObject, streamUI), response helper, and whether the failure is pre-stream or in-stream.
+  - type: textarea
+    id: dependency-change
+    attributes:
+      label: Recent dependency or lockfile change
+      description: Mention Dependabot PRs, manual upgrades, or lockfile churn if the problem started after a dependency change.
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Paste stack traces or command output with secrets, tokens, hostnames, and API keys redacted.
+      render: text
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety checklist
+      options:
+        - label: I removed or redacted secrets, API keys, tokens, hostnames, and private certificates.
+          required: true
+        - label: I did not include customer data or personally identifiable information.
+          required: true
+        - label: I included enough version and adapter information for maintainers to reproduce the issue.
+          required: true
