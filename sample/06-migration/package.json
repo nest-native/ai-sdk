@@ -1,0 +1,32 @@
+{
+  "name": "nest-native-ai-sdk-migration",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Sample 06 - migrating the official AI SDK NestJS cookbook recipe from raw @Res() + pipeUIMessageStreamToResponse to @AiStream, with before/after controllers proving the pre-stream guard fix on Express and Fastify",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "smoke": "ts-node --transpile-only scripts/smoke.ts",
+    "test": "npm run typecheck && npm run smoke",
+    "start": "ts-node --transpile-only src/main.ts",
+    "start:fastify": "ts-node --transpile-only src/main-fastify.ts"
+  },
+  "dependencies": {
+    "@nest-native/ai-sdk": "0.0.0",
+    "@nestjs/common": "11.1.26",
+    "@nestjs/core": "11.1.26",
+    "@nestjs/platform-express": "11.1.26",
+    "@nestjs/platform-fastify": "11.1.26",
+    "ai": "^5",
+    "fastify": "5.8.5",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.0",
+    "@types/node": "25.9.0",
+    "ts-node": "10.9.2",
+    "typescript": "6.0.3"
+  }
+}
