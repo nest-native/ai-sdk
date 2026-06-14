@@ -1,0 +1,80 @@
+{
+  "name": "@nest-native/ai-sdk",
+  "version": "0.0.0",
+  "description": "Decorator-first NestJS streaming primitive for the Vercel AI SDK that preserves the full Nest enhancer pipeline",
+  "keywords": [
+    "nestjs",
+    "ai",
+    "ai-sdk",
+    "vercel-ai",
+    "streaming",
+    "sse",
+    "llm",
+    "decorators",
+    "dependency-injection",
+    "typescript"
+  ],
+  "author": "Rodrigo Nogueira",
+  "license": "MIT",
+  "homepage": "https://github.com/nest-native/ai-sdk#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nest-native/ai-sdk.git",
+    "directory": "packages/ai-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/nest-native/ai-sdk/issues"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/**/*.d.ts",
+    "dist/**/*.js",
+    "dist/**/*.js.map"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/platform-fastify": "^11.0.0",
+    "ai": "^5",
+    "reflect-metadata": "^0.1.12 || ^0.2.0",
+    "rxjs": "^7.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/platform-express": {
+      "optional": true
+    },
+    "@nestjs/platform-fastify": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@nestjs/common": "^11.1.26",
+    "@nestjs/core": "^11.1.26",
+    "ai": "^5",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "typescript": "^6.0.3"
+  }
+}
