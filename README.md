@@ -10,11 +10,12 @@
 </p>
 
 > [!WARNING]
-> **Status: pre-release / under construction.** `@AiStream` now streams AI SDK
-> results on Express while preserving the full Nest enhancer pipeline, with a
-> showcase sample. The workspace builds, typechecks, tests at 100% coverage, and
-> is CI-green. Fastify parity, `@AiAbortSignal`, full error-mapping, and the
-> remaining samples arrive in later milestones. Do not depend on this in
+> **Status: pre-release / under construction.** `@AiStream` streams AI SDK
+> results on **both Express and Fastify** while preserving the full Nest
+> enhancer pipeline, and `@AiAbortSignal` cancels the AI SDK call when the client
+> disconnects mid-stream. The workspace builds, typechecks, tests at 100%
+> coverage, and is CI-green. Full error-mapping and the `streamObject` /
+> `streamUI` samples arrive in later milestones. Do not depend on this in
 > production yet.
 
 ## What This Is

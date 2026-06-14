@@ -31,6 +31,23 @@ package release is useful for users.
   (pre-stream guard rejection, text + UI message streams, pre-stream filter).
 - CI `samples` job and `release:check:sample-versions` to validate samples and
   keep their `@nest-native/ai-sdk` version pinned to the package version.
+- `@AiAbortSignal()` parameter decorator: injects an `AbortSignal` derived from
+  the client's connection that fires when the client disconnects mid-stream.
+  Forward it into your AI SDK call (`streamText({ ..., abortSignal })`) so a
+  disconnect cancels the upstream model request and stops billing. Works
+  identically on Express and Fastify; the signal is derived from the underlying
+  Node response and memoized so repeated `@AiAbortSignal()` resolutions share
+  one controller.
+- `sample/02-abort-signal`: a focused sample whose smoke test opens a stream
+  with a client-side `AbortController`, disconnects mid-stream, and asserts the
+  AI SDK model call is cancelled — on both Express and Fastify.
+
+### Fixed
+
+- Fastify streaming no longer throws `ERR_HTTP_HEADERS_SENT` when a client
+  disconnects mid-stream. `@AiStream` now calls `reply.hijack()` on Fastify so
+  the framework relinquishes the response lifecycle to the AI SDK; Express has
+  no equivalent and is unaffected.
 
 ### Pinned
 
