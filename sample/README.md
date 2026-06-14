@@ -18,7 +18,12 @@ The sample tree follows the same shape as the main quality strategy:
 - `05-stream-ui`: the v5 generative-UI equivalent of the removed RSC
   `streamUI` — a UI message stream with a custom `data-*` part built via
   `createUIMessageStream` and served through `@AiStream` on both adapters.
-- `06-*` onward: more focused samples that isolate one topic each (added in
+- `06-migration`: a before/after port of the official AI SDK NestJS cookbook
+  recipe — the raw `@Res()` + `pipe*ToResponse` controller (`/legacy/*`) next to
+  its `@AiStream` migration (`/migrated/*`) — proving the streams are
+  byte-identical while the migrated route gains pre-stream input validation and
+  Fastify parity the `@Res()` recipe lacks. See the repo-root `MIGRATION.md`.
+- `07-*` onward: more focused samples that isolate one topic each (added in
   later milestones).
 
 ## Commands

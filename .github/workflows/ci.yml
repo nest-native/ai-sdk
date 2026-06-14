@@ -263,6 +263,7 @@ jobs:
           | `03-error-mapping` | `streamText` (mock model) | Guard, pipe, exception filter (pre-stream HTTP errors) + in-stream `onError` frame mapping on Express + Fastify |
           | `04-stream-object` | `streamObject` (mock model) | Guard, pipe + partial-JSON text-delta streaming via `format: 'text'` on Express + Fastify |
           | `05-stream-ui` | `createUIMessageStream` custom data parts (v5 `streamUI` equivalent) | Guard, pipe + custom `data-*` UI part streaming on Express + Fastify |
+          | `06-migration` | `streamText` / `createUIMessageStream` (mock model) | Cookbook `@Res()` vs `@AiStream` before/after: guard + pipe pre-stream errors and Fastify parity |
 
           Samples never call a real model provider, so no API keys are used.
           EOF

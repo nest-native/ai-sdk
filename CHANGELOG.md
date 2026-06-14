@@ -41,6 +41,17 @@ package release is useful for users.
 - `sample/02-abort-signal`: a focused sample whose smoke test opens a stream
   with a client-side `AbortController`, disconnects mid-stream, and asserts the
   AI SDK model call is cancelled — on both Express and Fastify.
+- `MIGRATION.md`: a step-by-step guide that ports every recipe in the official
+  AI SDK NestJS cookbook (`ai-sdk.dev/cookbook/api-servers/nest`) — UI message
+  stream, custom data parts, and text stream — from raw `@Res()` +
+  `pipe*ToResponse` to `@AiStream`, with a checklist and a v4→v5 note. Linked
+  from the root and package READMEs.
+- `sample/06-migration`: a focused before/after sample mounting the cookbook's
+  raw `@Res()` recipe (`/legacy/*`) next to its `@AiStream` migration
+  (`/migrated/*`). Its smoke test asserts the streams are byte-identical on
+  Express, that the migrated route validates input as a pre-stream HTTP `400`
+  where the legacy recipe `500`s, and that the migrated recipes stream on Fastify
+  where the Express-only `@Res()` recipe cannot.
 
 ### Fixed
 

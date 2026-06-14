@@ -14,9 +14,10 @@
 > disconnects mid-stream, and pre-stream vs in-stream errors are mapped
 > correctly (HTTP errors vs documented stream error frames). Samples cover
 > `streamText`, `streamObject`, and the v5 generative-UI equivalent of
-> `streamUI` (custom data parts via `createUIMessageStream`). The migration guide
-> and documentation site land in later milestones. Do not depend on this in
-> production yet.
+> `streamUI` (custom data parts via `createUIMessageStream`), and a
+> [migration guide](../../MIGRATION.md) ports the official AI SDK NestJS cookbook
+> recipe to `@AiStream`. The documentation site lands in the next milestone. Do
+> not depend on this in production yet.
 
 ## What This Is
 
@@ -214,9 +215,19 @@ to vetted, non-sensitive messages.**
 See [`sample/03-error-mapping`](../../sample/03-error-mapping/README.md) for both
 paths exercised on Express and Fastify.
 
+## Migrating from the official cookbook
+
+Already using the official AI SDK NestJS recipe (raw `@Res()` +
+`pipe*ToResponse`)? The [migration guide](../../MIGRATION.md) ports every recipe
+in [`ai-sdk.dev/cookbook/api-servers/nest`](https://ai-sdk.dev/cookbook/api-servers/nest)
+to `@AiStream` one-for-one, and [`sample/06-migration`](../../sample/06-migration/README.md)
+ships the before/after side by side with a smoke test proving the streams are
+byte-identical.
+
 ## Links
 
 - Source and issues: [github.com/nest-native/ai-sdk](https://github.com/nest-native/ai-sdk)
+- Migration guide: [MIGRATION.md](../../MIGRATION.md)
 - Changelog: [CHANGELOG.md](../../CHANGELOG.md)
 - Vercel AI SDK: [ai-sdk.dev](https://ai-sdk.dev)
 - The nest-native family: [@nest-native/drizzle](https://www.npmjs.com/package/@nest-native/drizzle), [@nest-native/trpc](https://www.npmjs.com/package/@nest-native/trpc)
