@@ -2,6 +2,27 @@ import { ModuleMetadata, Provider } from '@nestjs/common';
 import type { ServerResponse } from 'node:http';
 
 /**
+ * Maps an error thrown *during* stream production to the message embedded in the
+ * AI SDK's in-stream error frame.
+ *
+ * This is the in-stream half of `@AiStream`'s error model. Once the response has
+ * started streaming the HTTP status and headers are already on the wire, so a
+ * mid-stream failure can no longer become an HTTP error — instead the AI SDK
+ * serializes a documented error frame inside the stream protocol, and this
+ * callback decides what message that frame carries.
+ *
+ * The AI SDK's default is `() => 'An error occurred.'`, which deliberately hides
+ * server-side error details from the client to avoid leaking secrets. Supplying
+ * your own mapper lets you surface a richer, *vetted* message (e.g. a stable
+ * error code) — never raw provider errors, which may contain credentials.
+ *
+ * Pre-stream errors (thrown by guards, pipes, or the handler before the first
+ * byte) are unaffected: those still propagate through the Nest enhancer pipeline
+ * as HTTP errors and never reach this callback.
+ */
+export type AiStreamErrorMapper = (error: unknown) => string;
+
+/**
  * Configuration for {@link AiModule.forRoot}.
  *
  * The module wires global configuration that the streaming primitives read
@@ -23,6 +44,19 @@ export interface AiModuleOptions {
    * override matching keys.
    */
   defaultHeaders?: Record<string, string>;
+
+  /**
+   * Default in-stream error mapper applied to every `@AiStream` route. A
+   * method-level {@link AiStreamOptions.onError} overrides it for that route.
+   *
+   * Applies only to the `ui-message` format, the only AI SDK stream protocol
+   * with a documented error frame. The `text` format has no error frame, so the
+   * mapper is ignored there (see {@link AiStreamOptions.onError}).
+   *
+   * When omitted, the AI SDK's secret-safe default (`'An error occurred.'`) is
+   * used.
+   */
+  onError?: AiStreamErrorMapper;
 }
 
 /**
@@ -90,6 +124,26 @@ export interface AiStreamOptions {
    * @default 200
    */
   status?: number;
+
+  /**
+   * In-stream error mapper for this route. Overrides
+   * {@link AiModuleOptions.onError}.
+   *
+   * Errors thrown *during* stream production (after the first byte) cannot
+   * become HTTP errors — the status and headers are already sent — so the AI SDK
+   * emits a documented error frame inside the stream instead. This callback maps
+   * the thrown error to the message that frame carries.
+   *
+   * Only the `ui-message` format defines an error frame. For the `text` format
+   * the AI SDK's `pipeTextStreamToResponse` accepts no error mapper and silently
+   * drops non-text events, so this option is ignored for `format: 'text'`;
+   * use `ui-message` if you need in-stream error reporting.
+   *
+   * When omitted (and {@link AiModuleOptions.onError} is unset), the AI SDK's
+   * secret-safe default (`'An error occurred.'`) is used, so raw provider errors
+   * never leak to the client.
+   */
+  onError?: AiStreamErrorMapper;
 }
 
 /**
@@ -122,12 +176,19 @@ export interface AiStreamResult {
 }
 
 /**
- * The status/header init the package forwards to the AI SDK's
+ * The status/header/error init the package forwards to the AI SDK's
  * `pipe*ToResponse` helpers.
+ *
+ * `onError` is forwarded only for the `ui-message` format
+ * (`pipeUIMessageStreamToResponse` accepts it via
+ * `UIMessageStreamOptions`); `pipeTextStreamToResponse` accepts only the
+ * `status`/`headers` `ResponseInit`, so the writer strips `onError` for the
+ * `text` format.
  */
 export interface AiStreamResponseInit {
   status?: number;
   headers?: Record<string, string>;
+  onError?: AiStreamErrorMapper;
 }
 
 /**

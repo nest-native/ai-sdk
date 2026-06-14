@@ -8,7 +8,11 @@ The sample tree follows the same shape as the main quality strategy:
 - `02-abort-signal`: `@AiAbortSignal()` forwarding the client-disconnect signal
   into the AI SDK call, with a smoke test that disconnects mid-stream and
   asserts the model call is cancelled on both adapters.
-- `03-*` onward: more focused samples that isolate one topic each (added in
+- `03-error-mapping`: the two-sided error model — pre-stream errors
+  (guard/pipe/handler) become HTTP errors, while in-stream failures become
+  documented stream error frames, with `onError` mapping (default hides the raw
+  error; a custom mapper rewrites it) verified on both adapters.
+- `04-*` onward: more focused samples that isolate one topic each (added in
   later milestones).
 
 ## Commands

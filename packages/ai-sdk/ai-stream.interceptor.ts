@@ -102,6 +102,15 @@ export class AiStreamInterceptor implements NestInterceptor {
       init.status = options.status;
     }
 
+    // Method-level error mapping wins over the module default; when neither is
+    // set the option is omitted so the AI SDK keeps its secret-safe default
+    // (`'An error occurred.'`).
+    const onError = options.onError ?? this.moduleOptions.onError;
+
+    if (onError !== undefined) {
+      init.onError = onError;
+    }
+
     return init;
   }
 }

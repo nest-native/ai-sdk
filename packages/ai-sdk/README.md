@@ -10,9 +10,11 @@
 > [!WARNING]
 > **Status: pre-release / under construction.** `@AiStream` streams AI SDK
 > results on **both Express and Fastify** while keeping the Nest enhancer
-> pipeline intact, and `@AiAbortSignal` cancels the AI SDK call when the client
-> disconnects mid-stream. Full error-mapping and the `streamObject` / `streamUI`
-> samples land in later milestones. Do not depend on this in production yet.
+> pipeline intact, `@AiAbortSignal` cancels the AI SDK call when the client
+> disconnects mid-stream, and pre-stream vs in-stream errors are mapped
+> correctly (HTTP errors vs documented stream error frames). The `streamObject` /
+> `streamUI` samples land in later milestones. Do not depend on this in
+> production yet.
 
 ## What This Is
 
@@ -149,6 +151,49 @@ on Express and Fastify, and it is memoized per request — declaring
 [`sample/02-abort-signal`](../../sample/02-abort-signal/README.md) for a smoke
 test that disconnects mid-stream and asserts the model call is cancelled on both
 adapters.
+
+### Error mapping: pre-stream vs in-stream
+
+`@AiStream` has a two-sided error model that mirrors when the failure happens
+relative to the first byte:
+
+- **Pre-stream errors** — thrown by a guard, a pipe, or the handler *before* it
+  returns a stream — flow through the Nest enhancer pipeline and become ordinary
+  HTTP errors (401 / 403 / 400 / 429 / …). The stream is never opened. This is
+  the headline differentiator over the raw `@Res()` cookbook recipe, where an
+  auth failure leaks into the SSE body instead.
+- **In-stream errors** — thrown *during* stream production, after the first byte
+  — can no longer be HTTP errors: the status and headers are already on the wire.
+  Instead the AI SDK emits a **documented error frame** inside the stream
+  protocol, never a partial-then-broken response. Use `onError` to map the thrown
+  error to that frame's message:
+
+```ts
+@Post()
+@AiStream({ onError: () => 'The model is temporarily unavailable.' })
+chat(@Body() body: ChatDto) {
+  return streamText({ model, prompt: body.prompt });
+}
+```
+
+`onError` can also be set module-wide via `AiModule.forRoot({ onError })`; a
+method-level mapper overrides the module default. When neither is set, the AI
+SDK's secret-safe default (`'An error occurred.'`) is used, so raw provider
+errors — which may contain credentials — never reach the client. **Only ever map
+to vetted, non-sensitive messages.**
+
+> The `text` format has no error frame: `pipeTextStreamToResponse` accepts only
+> status/headers and silently drops non-text events, so `onError` is ignored for
+> `format: 'text'`. Use the default `ui-message` format when you need in-stream
+> error reporting.
+>
+> Response-transform-style interceptors (e.g. a classic
+> `ResponseTransformInterceptor` that rewrites the final body) are incompatible
+> with streaming and are not auto-skipped — do not apply them to `@AiStream`
+> routes.
+
+See [`sample/03-error-mapping`](../../sample/03-error-mapping/README.md) for both
+paths exercised on Express and Fastify.
 
 ## Links
 

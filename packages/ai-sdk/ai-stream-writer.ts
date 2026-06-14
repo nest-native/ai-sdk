@@ -147,5 +147,18 @@ function writeTextStream(
     );
   }
 
-  result.pipeTextStreamToResponse(response, init);
+  // The text protocol has no error frame: `pipeTextStreamToResponse` accepts
+  // only status/headers and silently drops non-text events. Forward just those
+  // so we never pass an `onError` the AI SDK ignores for this format.
+  const textInit: AiStreamResponseInit = {};
+
+  if (init.status !== undefined) {
+    textInit.status = init.status;
+  }
+
+  if (init.headers !== undefined) {
+    textInit.headers = init.headers;
+  }
+
+  result.pipeTextStreamToResponse(response, textInit);
 }
