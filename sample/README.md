@@ -12,7 +12,13 @@ The sample tree follows the same shape as the main quality strategy:
   (guard/pipe/handler) become HTTP errors, while in-stream failures become
   documented stream error frames, with `onError` mapping (default hides the raw
   error; a custom mapper rewrites it) verified on both adapters.
-- `04-*` onward: more focused samples that isolate one topic each (added in
+- `04-stream-object`: `streamObject` served through `@AiStream({ format:
+  'text' })`, streaming a structured object as partial-JSON text deltas on both
+  adapters.
+- `05-stream-ui`: the v5 generative-UI equivalent of the removed RSC
+  `streamUI` — a UI message stream with a custom `data-*` part built via
+  `createUIMessageStream` and served through `@AiStream` on both adapters.
+- `06-*` onward: more focused samples that isolate one topic each (added in
   later milestones).
 
 ## Commands
