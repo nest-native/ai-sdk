@@ -48,6 +48,12 @@ See [@AiStream](ai-stream.md).
 Parameter decorator. Injects an `AbortSignal` that fires on client disconnect.
 See [@AiAbortSignal](abort-signal.md).
 
+### `@AiContext()`
+
+Parameter decorator. Injects a request-scoped `AiExecutionContext`
+(`{ request, response, signal }`) so an AI SDK tool's `execute` closure can reach
+the current request mid-stream. See [@AiContext](ai-context.md).
+
 ## Interfaces and Types
 
 ### `AiModuleOptions`
@@ -119,6 +125,17 @@ Structural views of the platform response the package normalizes across adapters
 `AiPlatformResponse.raw` is Fastify's underlying Node response;
 `AiPlatformResponse.hijack` is Fastify's `reply.hijack()`. Express omits both. See
 [Adapters](adapters.md).
+
+### `AiExecutionContext`
+
+The request-scoped context injected by `@AiContext()`. See
+[@AiContext](ai-context.md).
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `request` | `unknown` | The adapter's request object (Express `Request` / Fastify `FastifyRequest`). Cast it to read `request.user`, headers, or params. |
+| `response` | `AiPlatformResponse \| ServerResponse` | The active platform response. |
+| `signal` | `AbortSignal` | The client-disconnect signal — the same one `@AiAbortSignal()` resolves. |
 
 ## What Is Not Exported
 

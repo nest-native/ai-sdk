@@ -5,18 +5,18 @@ import { AiModuleAsyncOptions, AiModuleOptions } from './interfaces';
  * Injection token for the resolved {@link AiModuleOptions}.
  *
  * Consumers that need the global AI configuration can inject this token. The
- * streaming decorators added in later milestones resolve their defaults from
- * the same provider.
+ * streaming decorators (`@AiStream`) resolve their defaults from the same
+ * provider.
  */
 export const AI_MODULE_OPTIONS = Symbol('AI_MODULE_OPTIONS');
 
 /**
  * Root module for `@nest-native/ai-sdk`.
  *
- * At this scaffold milestone the module only registers global configuration so
- * applications can wire it into their root module. The `@AiStream`,
- * `@AiAbortSignal`, and `@AiContext` primitives arrive in later milestones and
- * build on this same module shell.
+ * The module registers the global configuration that `@AiStream` reads its
+ * defaults from (`defaultHeaders`, `onError`). The streaming primitives —
+ * `@AiStream`, `@AiAbortSignal`, and `@AiContext` — build on this same module
+ * shell.
  */
 @Module({})
 export class AiModule {

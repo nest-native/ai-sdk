@@ -8,14 +8,17 @@
 </p>
 
 > [!NOTE]
-> **Status: `0.1.0` — v1 surface complete.** `@AiStream` streams AI SDK results on
+> **Status: `0.2.0` — v1 surface complete.** `@AiStream` streams AI SDK results on
 > **both Express and Fastify** while keeping the Nest enhancer pipeline intact,
 > `@AiAbortSignal` cancels the AI SDK call when the client disconnects mid-stream,
-> and pre-stream vs in-stream errors are mapped correctly (HTTP errors vs
-> documented stream error frames). Samples cover `streamText`, `streamObject`, and
-> the v5 generative-UI equivalent of `streamUI` (custom data parts via
-> `createUIMessageStream`), a [migration guide](../../MIGRATION.md) ports the
-> official AI SDK NestJS cookbook recipe to `@AiStream`, and full
+> `@AiContext` injects request-scoped context (`{ request, response, signal }`) so
+> an AI SDK tool's `execute` closure can reach the current request mid-stream, and
+> pre-stream vs in-stream errors are mapped correctly (HTTP errors vs documented
+> stream error frames). Samples cover `streamText`, `streamObject`, the v5
+> generative-UI equivalent of `streamUI` (custom data parts via
+> `createUIMessageStream`), and request-scoped tool context. A
+> [migration guide](../../MIGRATION.md) ports the official AI SDK NestJS cookbook
+> recipe to `@AiStream`, and full
 > [documentation](https://nest-native.github.io/ai-sdk/) is published.
 
 ## What This Is
@@ -170,6 +173,51 @@ on Express and Fastify, and it is memoized per request — declaring
 [`sample/02-abort-signal`](../../sample/02-abort-signal/README.md) for a smoke
 test that disconnects mid-stream and asserts the model call is cancelled on both
 adapters.
+
+### Request-scoped tool context with `@AiContext`
+
+An AI SDK tool's `execute` closure runs *inside* the stream, after the handler
+returns, so it cannot use ordinary Nest parameter decorators to reach the current
+request. `@AiContext()` injects a request-scoped `AiExecutionContext` —
+`{ request, response, signal }` — that you capture in the handler and close over,
+giving a tool request-scoped access (auth/headers a guard attached) plus the
+client-disconnect signal:
+
+```ts
+import { AiContext, AiExecutionContext, AiStream } from '@nest-native/ai-sdk';
+import { Controller, Post, UseGuards } from '@nestjs/common';
+import { jsonSchema, streamText, tool } from 'ai';
+
+@UseGuards(ApiKeyGuard) // attaches request.user pre-stream
+@Controller('chat')
+export class ChatController {
+  @Post()
+  @AiStream()
+  chat(@AiContext() ctx: AiExecutionContext) {
+    const request = ctx.request as { user?: { id: string } };
+
+    return streamText({
+      model,
+      prompt: 'who am I?',
+      tools: {
+        whoami: tool({
+          description: 'Return the authenticated caller.',
+          inputSchema: jsonSchema({ type: 'object', properties: {} }),
+          execute: async () => ({ user: request.user }),
+        }),
+      },
+    });
+  }
+}
+```
+
+The context is minimal by design — `request`, `response`, and the
+client-disconnect `signal` (the same one `@AiAbortSignal()` resolves). It is not
+a broad context bus. Works identically on Express and Fastify and is memoized per
+request. See
+[`sample/07-tool-context`](../../sample/07-tool-context/README.md) for a smoke
+test where a tool's `execute` reads the guard-attached user via `@AiContext` on
+both adapters.
 
 ### Error mapping: pre-stream vs in-stream
 

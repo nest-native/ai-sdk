@@ -8,6 +8,37 @@ package release is useful for users.
 
 ## Unreleased
 
+## 0.2.0 - 2026-06-15
+
+Completes the v1 parameter-decorator surface with `@AiContext`, the last
+primitive named in the public API.
+
+### Added
+
+- `@AiContext()` parameter decorator: injects a request-scoped
+  `AiExecutionContext` — `{ request, response, signal }` — so an AI SDK tool's
+  `execute` closure can reach the current request mid-stream. The closure runs
+  inside the stream, after the handler returned, where ordinary Nest parameter
+  decorators can no longer reach the request; capture the context in the handler
+  and close over it to read request-scoped data (auth/headers a guard attached)
+  and the client-disconnect signal. `request`/`response` come from the active
+  adapter and `signal` reuses the package's memoized client-disconnect signal
+  (the same one `@AiAbortSignal()` resolves), so it never wires a second
+  `AbortController`. The context is memoized per request and works identically on
+  Express and Fastify. Exported alongside the `AiExecutionContext` type and the
+  unit-testable `aiContextFactory` / `resolveAiExecutionContext`.
+- `sample/07-tool-context`: a focused sample whose `streamText` tool's `execute`
+  reads the guard-attached `request.user` via `@AiContext` mid-stream. Its smoke
+  test asserts a missing API key is a pre-stream `401` and that the tool output
+  carries the authenticated user — on both Express and Fastify.
+
+### Docs
+
+- New `@AiContext` documentation page (sidebar + API reference), and the sample
+  catalog/README gain `07-tool-context`. `CONTRIBUTING.md` and the `AiModule`
+  JSDoc now describe the complete, released v1 surface (including `@AiContext`)
+  rather than the bootstrap framing.
+
 ## 0.1.0 - 2026-06-14
 
 First user-facing release. The full v1 surface — `@AiStream`, `@AiAbortSignal`,

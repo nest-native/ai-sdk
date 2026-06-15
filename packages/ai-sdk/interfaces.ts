@@ -222,3 +222,58 @@ export interface AiPlatformResponse {
    */
   hijack?: () => void;
 }
+
+/**
+ * Request-scoped context injected by `@AiContext()`.
+ *
+ * AI SDK tool `execute` closures run *inside* the stream, after the handler has
+ * returned, so they cannot use ordinary Nest parameter decorators to reach the
+ * current request. Capturing this context in the handler and closing over it
+ * gives a tool exactly what it realistically needs — request data, the active
+ * response, and the client-disconnect signal — without inventing a broad
+ * context bus.
+ *
+ * @example
+ * ```ts
+ * @Post()
+ * @AiStream()
+ * chat(@Body() body: ChatDto, @AiContext() ctx: AiExecutionContext) {
+ *   return streamText({
+ *     model,
+ *     prompt: body.prompt,
+ *     tools: {
+ *       whoami: tool({
+ *         description: 'Return the authenticated user',
+ *         inputSchema: z.object({}),
+ *         // The closure reads request-scoped data captured at handler time.
+ *         execute: async () => (ctx.request as { user?: unknown }).user,
+ *       }),
+ *     },
+ *   });
+ * }
+ * ```
+ */
+export interface AiExecutionContext {
+  /**
+   * The adapter's request object — Express `Request` or Fastify
+   * `FastifyRequest`. Typed as `unknown` so the package depends on neither
+   * platform at the type level; cast it to the shape your app uses (e.g. to
+   * read `request.user` a guard attached, headers, or route params).
+   */
+  request: unknown;
+
+  /**
+   * The active platform response. Express returns the Node `ServerResponse`
+   * directly; Fastify returns a `FastifyReply` whose `.raw` is the underlying
+   * response. Most tools never need this, but it is here for the rare one that
+   * inspects response state.
+   */
+  response: AiPlatformResponse | ServerResponse;
+
+  /**
+   * The client-disconnect {@link AbortSignal} — the same signal
+   * `@AiAbortSignal()` resolves. Forward it from a long-running tool so the
+   * tool bails out when the client goes away mid-stream.
+   */
+  signal: AbortSignal;
+}

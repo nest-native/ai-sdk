@@ -4,10 +4,16 @@ Thanks for helping improve `@nest-native/ai-sdk`.
 
 ## Project Status
 
-This package is at its bootstrap milestone (`v0.0.1-scaffold`). The public
-streaming primitives (`@AiStream`, `@AiAbortSignal`, `@AiContext`) and the
-sample catalog land in later milestones. Until then, contributions focus on the
-workspace skeleton, the `AiModule` shell, CI, and project documentation.
+The v1 surface is complete and released as `0.2.0`. `@AiStream` streams AI SDK
+results on both Express and Fastify while preserving the full Nest enhancer
+pipeline; `@AiAbortSignal` cancels the AI SDK call when the client disconnects
+mid-stream; `@AiContext` injects request-scoped context (`{ request, response,
+signal }`) for AI SDK tool `execute` closures; pre-stream vs in-stream errors
+are mapped correctly; and the sample catalog covers `streamText`, `streamObject`,
+the v5 generative-UI equivalent of `streamUI`, and request-scoped tool context.
+The workspace builds, typechecks, tests at 100% coverage, and is CI-green.
+Contributions now focus on keeping that surface correct across NestJS minors and
+AI SDK majors.
 
 ## Sample Work Must Stay Separate From Library Fixes
 
