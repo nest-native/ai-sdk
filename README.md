@@ -10,7 +10,11 @@
 </p>
 
 > [!NOTE]
-> **Status: `0.2.0` — v1 surface complete.** `@AiStream` streams AI SDK results on
+> **Status: `0.2.0` (`0.x`).** Functional and fully tested (100% coverage), and
+> usable today — but the public API may still change before `1.0`, so pin a
+> version (per semver, `0.x` minor releases can include breaking changes). See the
+> [support policy](https://nest-native.github.io/ai-sdk/docs/support-policy).
+> `@AiStream` streams AI SDK results on
 > **both Express and Fastify** while preserving the full Nest enhancer pipeline,
 > `@AiAbortSignal` cancels the AI SDK call when the client disconnects mid-stream,
 > `@AiContext` injects request-scoped context (`{ request, response, signal }`) so
@@ -179,7 +183,8 @@ npm run ci
 
 ## Status and Roadmap
 
-The v1 surface is complete and released as `0.2.0`. The path that got here:
+The initial `0.x` release covers the surface below, released as `0.2.0` (the
+public API may still change before `1.0`). The path that got here:
 
 1. ~~**Bootstrap** — repo skeleton, empty package, CI green.~~ ✅
 2. ~~`@AiStream` skeleton on Express with a showcase sample.~~ ✅

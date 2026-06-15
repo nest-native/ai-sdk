@@ -39,5 +39,7 @@ does not depend on the bug being fixed and does not pre-fix it.
 ## Stability
 
 The package is pre-`1.0`. The public API surface (`@AiStream`, `@AiAbortSignal`,
-`AiModule`) is the v1 contract described in the [API Reference](api-reference.md);
-see the [Roadmap](roadmap.md) for what is intentionally out of scope.
+`AiModule`) is the current `0.x` public API described in the
+[API Reference](api-reference.md); per semver it may still change before `1.0`
+(pin a version), and the [Roadmap](roadmap.md) covers what is intentionally out of
+scope.

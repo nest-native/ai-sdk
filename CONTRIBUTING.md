@@ -4,7 +4,8 @@ Thanks for helping improve `@nest-native/ai-sdk`.
 
 ## Project Status
 
-The v1 surface is complete and released as `0.2.0`. `@AiStream` streams AI SDK
+The initial `0.x` release covers the surface below, released as `0.2.0` (the
+public API may still change before `1.0`). `@AiStream` streams AI SDK
 results on both Express and Fastify while preserving the full Nest enhancer
 pipeline; `@AiAbortSignal` cancels the AI SDK call when the client disconnects
 mid-stream; `@AiContext` injects request-scoped context (`{ request, response,
