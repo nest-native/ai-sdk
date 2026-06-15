@@ -46,8 +46,8 @@ package. The project resists it.
 
 ## Beyond v1
 
-There is no committed feature roadmap beyond keeping the v1 surface correct
-across NestJS minors and AI SDK majors. Anything new is weighed against the design
+There is no committed feature roadmap beyond keeping the current `0.x` surface
+correct across NestJS minors and AI SDK majors. Anything new is weighed against the design
 bar: *would it feel native alongside `@Sse` (with its bugs fixed) and the standard
 Nest HTTP handler shape, while honoring the AI SDK's streaming protocol?* If not,
 it is not added.

@@ -9,9 +9,9 @@ CI-only changes may remain under `Unreleased` in the
 [`CHANGELOG.md`](https://github.com/nest-native/ai-sdk/blob/main/CHANGELOG.md)
 until the next package release is useful for users.
 
-`0.1.0` is the first user-facing release: the full v1 surface (`@AiStream`,
+`0.1.0` is the first user-facing release: the initial `0.x` surface (`@AiStream`,
 `@AiAbortSignal`, `AiModule`) on Express and Fastify, with the documentation site
-in place.
+in place. The public API may still change before `1.0`.
 
 ## Version Synchronization (mandatory)
 
