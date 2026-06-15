@@ -264,6 +264,7 @@ jobs:
           | `04-stream-object` | `streamObject` (mock model) | Guard, pipe + partial-JSON text-delta streaming via `format: 'text'` on Express + Fastify |
           | `05-stream-ui` | `createUIMessageStream` custom data parts (v5 `streamUI` equivalent) | Guard, pipe + custom `data-*` UI part streaming on Express + Fastify |
           | `06-migration` | `streamText` / `createUIMessageStream` (mock model) | Cookbook `@Res()` vs `@AiStream` before/after: guard + pipe pre-stream errors and Fastify parity |
+          | `07-tool-context` | `streamText` + tool + `@AiContext` (mock model) | Guard-attached `request.user` read by a tool `execute` via `@AiContext` on Express + Fastify |
 
           Samples never call a real model provider, so no API keys are used.
           EOF

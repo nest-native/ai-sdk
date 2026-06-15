@@ -18,6 +18,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'ai-stream',
         'abort-signal',
+        'ai-context',
         'error-mapping',
         'stream-formats',
         'api-reference',

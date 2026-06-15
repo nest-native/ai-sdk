@@ -13,6 +13,7 @@ real model provider — all use a mock model, so no API keys are needed.
 | `04-stream-object` | `streamObject` (mock) | Structured object streamed as partial-JSON text deltas via `format: 'text'` on both adapters |
 | `05-stream-ui` | `createUIMessageStream` (mock) | Custom `data-*` UI parts — the v5 generative-UI equivalent of `streamUI` — on both adapters |
 | `06-migration` | `streamText` / `createUIMessageStream` (mock) | Cookbook `@Res()` vs `@AiStream` before/after: byte-identical streams, plus pre-stream validation and Fastify parity the `@Res()` recipe lacks |
+| `07-tool-context` | `streamText` + tool + `@AiContext` (mock) | A tool's `execute` reads the guard-attached user via `@AiContext` mid-stream on both adapters |
 
 ## `00-showcase`
 
@@ -64,3 +65,13 @@ streams are byte-identical, that the migrated route validates input as a
 pre-stream `400` where the legacy recipe `500`s, and that the migrated recipes
 stream on Fastify where the Express-only `@Res()` recipe cannot. See the
 [Migration Guide](../migration.md).
+
+## `07-tool-context`
+
+An API-key guard authenticates the caller pre-stream and attaches `request.user`.
+A `streamText` tool's `execute` then reads that user back through the
+`@AiContext()` value the handler captured — proving a tool can reach
+request-scoped data even though it runs mid-stream, after the handler returned.
+The smoke test asserts a missing key is a pre-stream `401` and that the tool
+output carries the authenticated user on both adapters. See
+[@AiContext](../ai-context.md).

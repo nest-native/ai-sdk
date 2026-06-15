@@ -23,8 +23,9 @@ The sample tree follows the same shape as the main quality strategy:
   its `@AiStream` migration (`/migrated/*`) — proving the streams are
   byte-identical while the migrated route gains pre-stream input validation and
   Fastify parity the `@Res()` recipe lacks. See the repo-root `MIGRATION.md`.
-- `07-*` onward: more focused samples that isolate one topic each (added in
-  later milestones).
+- `07-tool-context`: `@AiContext()` giving an AI SDK tool's `execute` closure
+  request-scoped access — a guard attaches `request.user` pre-stream and the tool
+  reads it back mid-stream through the captured context, on both adapters.
 
 ## Commands
 

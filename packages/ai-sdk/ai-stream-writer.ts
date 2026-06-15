@@ -13,8 +13,8 @@ import {
  *
  * Express's `getResponse()` already returns the Node response. Fastify returns
  * a `FastifyReply` whose `.raw` property is the Node response. Normalizing here
- * keeps the interceptor adapter-agnostic, which is what unlocks Express +
- * Fastify parity in later milestones without touching the core decorator.
+ * keeps the interceptor adapter-agnostic, which is what gives Express + Fastify
+ * parity without touching the core decorator.
  */
 export function resolveServerResponse(
   response: AiPlatformResponse | ServerResponse,

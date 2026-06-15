@@ -6,19 +6,22 @@
   <a href="https://www.npmjs.com/package/@nest-native/ai-sdk"><img src="https://img.shields.io/npm/v/@nest-native/ai-sdk.svg" alt="NPM Version" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Package License" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Test Coverage" />
-  <img src="https://img.shields.io/badge/version-0.1.0-blue.svg" alt="Version: 0.1.0" />
+  <img src="https://img.shields.io/badge/version-0.2.0-blue.svg" alt="Version: 0.2.0" />
 </p>
 
 > [!NOTE]
-> **Status: `0.1.0` — v1 surface complete.** `@AiStream` streams AI SDK results on
+> **Status: `0.2.0` — v1 surface complete.** `@AiStream` streams AI SDK results on
 > **both Express and Fastify** while preserving the full Nest enhancer pipeline,
 > `@AiAbortSignal` cancels the AI SDK call when the client disconnects mid-stream,
+> `@AiContext` injects request-scoped context (`{ request, response, signal }`) so
+> an AI SDK tool's `execute` closure can reach the current request mid-stream,
 > pre-stream vs in-stream errors are mapped correctly, and samples cover
-> `streamText`, `streamObject`, and the v5 generative-UI equivalent of `streamUI`.
-> The workspace builds, typechecks, tests at 100% coverage, and is CI-green. A
-> [migration guide](MIGRATION.md) ports the official AI SDK NestJS cookbook recipe
-> to `@AiStream`, and a [documentation site](https://nest-native.github.io/ai-sdk/)
-> is published from [`website/`](website).
+> `streamText`, `streamObject`, the v5 generative-UI equivalent of `streamUI`, and
+> request-scoped tool context. The workspace builds, typechecks, tests at 100%
+> coverage, and is CI-green. A [migration guide](MIGRATION.md) ports the official
+> AI SDK NestJS cookbook recipe to `@AiStream`, and a
+> [documentation site](https://nest-native.github.io/ai-sdk/) is published from
+> [`website/`](website).
 
 ## What This Is
 
@@ -176,7 +179,7 @@ npm run ci
 
 ## Status and Roadmap
 
-The v1 surface is complete and released as `0.1.0`. The path that got here:
+The v1 surface is complete and released as `0.2.0`. The path that got here:
 
 1. ~~**Bootstrap** — repo skeleton, empty package, CI green.~~ ✅
 2. ~~`@AiStream` skeleton on Express with a showcase sample.~~ ✅
@@ -186,6 +189,7 @@ The v1 surface is complete and released as `0.1.0`. The path that got here:
 6. ~~`streamObject` + `streamUI` samples.~~ ✅
 7. ~~Migration guide from raw `@Res()` piping.~~ ✅
 8. ~~Documentation site. Release `v0.1`.~~ ✅
+9. ~~`@AiContext` — request-scoped context for tool `execute`. Release `v0.2`.~~ ✅
 
 See [CHANGELOG.md](CHANGELOG.md) for what has landed and the
 [roadmap](https://nest-native.github.io/ai-sdk/docs/roadmap) for the scope

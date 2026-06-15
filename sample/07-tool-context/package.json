@@ -1,8 +1,8 @@
 {
-  "name": "nest-native-ai-sdk-fastify-parity",
+  "name": "nest-native-ai-sdk-tool-context",
   "version": "0.0.0",
   "private": true,
-  "description": "Sample 01 - @AiStream Express and Fastify adapter parity",
+  "description": "Sample 07 - @AiContext gives an AI SDK tool execute closure request-scoped access",
   "license": "MIT",
   "scripts": {
     "typecheck": "tsc --noEmit -p tsconfig.json",
@@ -18,12 +18,9 @@
     "@nestjs/platform-express": "11.1.26",
     "@nestjs/platform-fastify": "11.1.26",
     "ai": "^5",
-    "class-transformer": "0.5.1",
-    "class-validator": "^0.14.1",
     "fastify": "5.8.5",
     "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.2",
-    "zod": "^3.25.0"
+    "rxjs": "7.8.2"
   },
   "devDependencies": {
     "@types/node": "25.9.0",
