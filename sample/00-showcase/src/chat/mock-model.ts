@@ -10,14 +10,14 @@ import { LanguageModel, simulateReadableStream } from 'ai';
  * produced the result.
  *
  * `simulateReadableStream` is part of the AI SDK's public API, so the mock
- * stays on supported surface. We build a minimal v2 language model around it
+ * stays on supported surface. We build a minimal v3 language model around it
  * and return it through the SDK's own `LanguageModel` type.
  */
 export function createMockModel(reply: string): LanguageModel {
   const words = reply.split(' ');
 
   const model = {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'mock-model',
     supportedUrls: {},
@@ -37,11 +37,19 @@ export function createMockModel(reply: string): LanguageModel {
           { type: 'text-end', id: '1' },
           {
             type: 'finish',
-            finishReason: 'stop',
+            finishReason: { unified: 'stop', raw: undefined },
             usage: {
-              inputTokens: 8,
-              outputTokens: words.length,
-              totalTokens: 8 + words.length,
+              inputTokens: {
+                total: 8,
+                noCache: 8,
+                cacheRead: 0,
+                cacheWrite: 0,
+              },
+              outputTokens: {
+                total: words.length,
+                text: words.length,
+                reasoning: 0,
+              },
             },
           },
         ],

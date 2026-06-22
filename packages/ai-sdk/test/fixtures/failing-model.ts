@@ -1,7 +1,7 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV2,
-  LanguageModelV2StreamPart,
+  LanguageModelV3,
+  LanguageModelV3StreamPart,
 } from '@ai-sdk/provider';
 
 /**
@@ -21,9 +21,9 @@ import type {
 export function createFailingLanguageModel(
   prefix: string,
   error: Error,
-): LanguageModelV2 {
+): LanguageModelV3 {
   const words = prefix.split(' ');
-  const chunks: LanguageModelV2StreamPart[] = [
+  const chunks: LanguageModelV3StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     { type: 'text-start', id: '1' },
     ...words.map((word, index) => ({
@@ -35,7 +35,7 @@ export function createFailingLanguageModel(
   ];
 
   return {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'failing-mock-model',
     supportedUrls: {},

@@ -19,7 +19,9 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 - Current stabilization support line:
   - Node.js `>=20`
   - NestJS `11.x`
-  - `ai` (Vercel AI SDK) `^5` — pin major; pre-v5 not supported
+  - `ai` (Vercel AI SDK) `^6` — track the current major; adopt new majors
+    rather than pinning to an old one. Older majors are not supported; a
+    major bump is a deliberate breaking peer change (see §10).
 - Full NestJS enhancer pipeline integration is NON-NEGOTIABLE:
   - Guards reject BEFORE the stream opens (so errors are HTTP errors, not
     SSE frames).
@@ -54,7 +56,7 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   - `@AiAbortSignal()` plumbing with verified disconnect-cancels-AI-SDK-call
     behavior
   - Pre-stream vs in-stream error mapping (HTTP vs stream-error frame)
-  - `streamText`, `streamObject`, `streamUI` (or v5 equivalents) supported
+  - `streamText`, `streamObject`, `streamUI` (or v6 equivalents) supported
   - Showcase sample + at least four focused samples
 - v1 does NOT ship:
   - Agent framework / tool execution helpers (use Mastra, LangGraph, etc.)
@@ -162,8 +164,11 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 ### 10. Release Version Synchronization (MANDATORY)
 
 - Version drift between `packages/ai-sdk` and `sample/*` is a release blocker.
-- AI SDK version pin is critical: v5 is a hard requirement; document
-  non-support of older majors prominently.
+- The AI SDK major is tracked, not pinned to a legacy version: the peer range
+  follows the current major (`ai ^6`). When the AI SDK ships a new major, adopt
+  it — bump the peer range, migrate the source/samples/fixtures to the new API,
+  and release it as a breaking peer change — rather than holding an old major.
+  Document the supported range and non-support of older majors prominently.
 - When bumping `packages/ai-sdk/package.json`, update all
   `sample/*/package.json` entries for `"@nest-native/ai-sdk"` in the same change.
 - Regenerate `package-lock.json`. Run `npm run release:check`. Run

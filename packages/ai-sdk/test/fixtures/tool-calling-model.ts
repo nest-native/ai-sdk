@@ -1,7 +1,7 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV2,
-  LanguageModelV2StreamPart,
+  LanguageModelV3,
+  LanguageModelV3StreamPart,
 } from '@ai-sdk/provider';
 
 /**
@@ -13,8 +13,8 @@ import type {
  * the test prove a tool `execute` can read request-scoped data captured via
  * `@AiContext`. Fully offline — no provider, no API keys.
  */
-export function createToolCallingModel(toolName: string): LanguageModelV2 {
-  const chunks: LanguageModelV2StreamPart[] = [
+export function createToolCallingModel(toolName: string): LanguageModelV3 {
+  const chunks: LanguageModelV3StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     {
       type: 'tool-call',
@@ -24,17 +24,25 @@ export function createToolCallingModel(toolName: string): LanguageModelV2 {
     },
     {
       type: 'finish',
-      finishReason: 'tool-calls',
+      finishReason: { unified: 'tool-calls', raw: undefined },
       usage: {
-        inputTokens: 8,
-        outputTokens: 1,
-        totalTokens: 9,
+        inputTokens: {
+          total: 8,
+          noCache: 8,
+          cacheRead: 0,
+          cacheWrite: 0,
+        },
+        outputTokens: {
+          total: 1,
+          text: 1,
+          reasoning: 0,
+        },
       },
     },
   ];
 
   return {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'tool-calling-mock-model',
     supportedUrls: {},

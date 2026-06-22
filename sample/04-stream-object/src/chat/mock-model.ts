@@ -25,17 +25,20 @@ export function createRecipeMockModel(recipe: Recipe): LanguageModel {
     { type: 'text-end', id: '1' },
     {
       type: 'finish',
-      finishReason: 'stop',
+      finishReason: { unified: 'stop', raw: undefined },
       usage: {
-        inputTokens: 8,
-        outputTokens: deltas.length,
-        totalTokens: 8 + deltas.length,
+        inputTokens: { total: 8, noCache: 8, cacheRead: 0, cacheWrite: 0 },
+        outputTokens: {
+          total: deltas.length,
+          text: deltas.length,
+          reasoning: 0,
+        },
       },
     },
   ];
 
   const model = {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'stream-object-mock-model',
     supportedUrls: {},

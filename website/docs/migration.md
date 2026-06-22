@@ -59,10 +59,10 @@ import { convertToModelMessages, streamText } from 'ai';
 export class ChatController {
   @Post()
   @AiStream()
-  chat(@Body() body: { messages: UIMessage[] }) {
+  async chat(@Body() body: { messages: UIMessage[] }) {
     return streamText({
       model: 'openai/gpt-4o',
-      messages: convertToModelMessages(body.messages),
+      messages: await convertToModelMessages(body.messages),
     });
   }
 }
@@ -100,9 +100,10 @@ The cookbook's `createUIMessageStream` + standalone
 - [ ] Drop the `express`-typed `Response` import — the same handler now runs on
       Fastify too.
 
-## Version note (v4 → v5)
+## Version note (v5 → v6)
 
-`@nest-native/ai-sdk` targets the Vercel AI SDK **v5** stream protocol and pins
-`ai` to `^5`. The v4 → v5 rework changed the stream protocol; pre-v5 is not
-supported. Upgrade the AI SDK to v5 before applying this guide. See
+`@nest-native/ai-sdk` tracks the current Vercel AI SDK major: the `ai` peer is
+`^6`. The v6 rework changed the provider specification (language-model interface
+`v2` → `v3`) and made `convertToModelMessages` async; older majors are not
+supported. Upgrade the AI SDK to v6 before applying this guide. See
 [Support Policy](support-policy.md).

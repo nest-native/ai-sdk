@@ -40,11 +40,14 @@ import { createMockModel } from './mock-model';
 export class LegacyChatController {
   /** Recipe 1: UI message stream (the format `useChat` consumes). */
   @Post('chat')
-  chat(@Body() body: ChatRequest, @Res() res: ServerResponse): void {
+  async chat(
+    @Body() body: ChatRequest,
+    @Res() res: ServerResponse,
+  ): Promise<void> {
     const prompt = lastUserText(body);
     const result = streamText({
       model: createMockModel(`You said: ${prompt}`),
-      messages: convertToModelMessages(body.messages as never),
+      messages: await convertToModelMessages(body.messages as never),
     });
 
     result.pipeUIMessageStreamToResponse(res);
@@ -55,7 +58,7 @@ export class LegacyChatController {
   streamData(@Body() body: ChatRequest, @Res() res: ServerResponse): void {
     const prompt = lastUserText(body);
     const stream = createUIMessageStream({
-      execute: ({ writer }) => {
+      execute: async ({ writer }) => {
         writer.write({ type: 'start' });
         writer.write({
           type: 'data-custom',
@@ -64,7 +67,7 @@ export class LegacyChatController {
 
         const result = streamText({
           model: createMockModel(`You said: ${prompt}`),
-          messages: convertToModelMessages(body.messages as never),
+          messages: await convertToModelMessages(body.messages as never),
         });
         writer.merge(
           result.toUIMessageStream({
@@ -81,11 +84,14 @@ export class LegacyChatController {
 
   /** Recipe 3: a plain text delta stream. */
   @Post('text')
-  text(@Body() body: ChatRequest, @Res() res: ServerResponse): void {
+  async text(
+    @Body() body: ChatRequest,
+    @Res() res: ServerResponse,
+  ): Promise<void> {
     const prompt = lastUserText(body);
     const result = streamText({
       model: createMockModel(`Echo: ${prompt}`),
-      messages: convertToModelMessages(body.messages as never),
+      messages: await convertToModelMessages(body.messages as never),
     });
 
     result.pipeTextStreamToResponse(res);

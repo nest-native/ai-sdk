@@ -21,17 +21,16 @@ export function createToolCallingModel(toolName: string): LanguageModel {
     },
     {
       type: 'finish',
-      finishReason: 'tool-calls',
+      finishReason: { unified: 'tool-calls', raw: undefined },
       usage: {
-        inputTokens: 8,
-        outputTokens: 1,
-        totalTokens: 9,
+        inputTokens: { total: 8, noCache: 8, cacheRead: 0, cacheWrite: 0 },
+        outputTokens: { total: 1, text: 1, reasoning: 0 },
       },
     },
   ];
 
   const model = {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'tool-calling-mock-model',
     supportedUrls: {},

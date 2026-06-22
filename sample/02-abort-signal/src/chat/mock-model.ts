@@ -38,11 +38,14 @@ export function createAbortableMockModel(
     { type: 'text-end', id: '1' },
     {
       type: 'finish',
-      finishReason: 'stop',
+      finishReason: { unified: 'stop', raw: undefined },
       usage: {
-        inputTokens: 8,
-        outputTokens: words.length,
-        totalTokens: 8 + words.length,
+        inputTokens: { total: 8, noCache: 8, cacheRead: 0, cacheWrite: 0 },
+        outputTokens: {
+          total: words.length,
+          text: words.length,
+          reasoning: 0,
+        },
       },
     },
   ];
@@ -59,7 +62,7 @@ export function createAbortableMockModel(
   });
 
   const model = {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'abortable-mock-model',
     supportedUrls: {},

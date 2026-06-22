@@ -1,4 +1,4 @@
-import { AiStream } from '@nest-native/ai-sdk';
+import { AiStream, AiStreamResult } from '@nest-native/ai-sdk';
 import {
   Body,
   Controller,
@@ -45,7 +45,7 @@ export class ChatController {
   @AiStream({ headers: { 'x-showcase-stream': 'ui-message' } })
   chat(
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
-  ) {
+  ): AiStreamResult {
     this.consumeQuota();
 
     return streamText({
@@ -61,7 +61,7 @@ export class ChatController {
   @AiStream({ format: 'text' })
   chatText(
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
-  ) {
+  ): AiStreamResult {
     return streamText({
       model: createMockModel(`Echo: ${body.prompt}`),
       prompt: body.prompt,

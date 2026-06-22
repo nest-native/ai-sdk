@@ -62,7 +62,7 @@ This package's headline differentiators:
 | --- | --- |
 | Node.js | `>=20` |
 | NestJS | `11.x` |
-| Vercel AI SDK (`ai`) | `^5` (pin major; pre-v5 not supported) |
+| Vercel AI SDK (`ai`) | `^6` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
 | Validation | Zod and class-validator, both app-owned |
 

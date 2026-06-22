@@ -44,8 +44,10 @@ Publishing to npm is performed out of band by a maintainer with credentials. The
 CI pipeline never publishes. After a publish, re-run full CI with samples pinned
 to the published version.
 
-## AI SDK Pin
+## AI SDK Major
 
-The `ai` peer is pinned to `^5`. v5 is a hard requirement; document non-support of
-older majors prominently. Review the AI SDK changelog at every bump. See the
+The `ai` peer tracks the current major: `^6`. Older majors are not supported;
+document this prominently. When the AI SDK ships a new major, adopt it — bump
+the peer range, migrate the source/samples/fixtures, and release it as a
+breaking peer change. Review the AI SDK changelog at every bump. See the
 [Support Policy](support-policy.md).

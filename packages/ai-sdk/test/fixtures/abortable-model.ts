@@ -1,7 +1,7 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV2,
-  LanguageModelV2StreamPart,
+  LanguageModelV3,
+  LanguageModelV3StreamPart,
 } from '@ai-sdk/provider';
 
 /**
@@ -20,7 +20,7 @@ import type {
  *   activity past the test (which `node:test` would flag as a failure).
  */
 export interface AbortableModel {
-  readonly model: LanguageModelV2;
+  readonly model: LanguageModelV3;
   /** The `abortSignal` captured from the most recent `doStream` call. */
   readonly capturedSignal: () => AbortSignal | undefined;
   /** Resolves once `doStream` has been invoked at least once. */
@@ -37,7 +37,7 @@ export function createAbortableModel(
   chunkDelayInMs = 50,
 ): AbortableModel {
   const words = reply.split(' ');
-  const chunks: LanguageModelV2StreamPart[] = [
+  const chunks: LanguageModelV3StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     { type: 'text-start', id: '1' },
     ...words.map((word, index) => ({
@@ -48,11 +48,19 @@ export function createAbortableModel(
     { type: 'text-end', id: '1' },
     {
       type: 'finish',
-      finishReason: 'stop',
+      finishReason: { unified: 'stop', raw: undefined },
       usage: {
-        inputTokens: 8,
-        outputTokens: words.length,
-        totalTokens: 8 + words.length,
+        inputTokens: {
+          total: 8,
+          noCache: 8,
+          cacheRead: 0,
+          cacheWrite: 0,
+        },
+        outputTokens: {
+          total: words.length,
+          text: words.length,
+          reasoning: 0,
+        },
       },
     },
   ];
@@ -68,8 +76,8 @@ export function createAbortableModel(
     signalSettled = resolve;
   });
 
-  const model: LanguageModelV2 = {
-    specificationVersion: 'v2',
+  const model: LanguageModelV3 = {
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'abortable-mock-model',
     supportedUrls: {},

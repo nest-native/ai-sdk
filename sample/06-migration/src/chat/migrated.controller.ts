@@ -1,4 +1,4 @@
-import { AiStream } from '@nest-native/ai-sdk';
+import { AiStream, AiStreamResult } from '@nest-native/ai-sdk';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import {
   convertToModelMessages,
@@ -36,12 +36,14 @@ export class MigratedChatController {
   /** Recipe 1: UI message stream (the format `useChat` consumes). */
   @Post('chat')
   @AiStream()
-  chat(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  async chat(
+    @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
+  ): Promise<AiStreamResult> {
     const prompt = lastUserText(body);
 
     return streamText({
       model: createMockModel(`You said: ${prompt}`),
-      messages: convertToModelMessages(body.messages as never),
+      messages: await convertToModelMessages(body.messages as never),
     });
   }
 
@@ -51,7 +53,7 @@ export class MigratedChatController {
   streamData(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
     const prompt = lastUserText(body);
     const stream = createUIMessageStream({
-      execute: ({ writer }) => {
+      execute: async ({ writer }) => {
         writer.write({ type: 'start' });
         writer.write({
           type: 'data-custom',
@@ -60,7 +62,7 @@ export class MigratedChatController {
 
         const result = streamText({
           model: createMockModel(`You said: ${prompt}`),
-          messages: convertToModelMessages(body.messages as never),
+          messages: await convertToModelMessages(body.messages as never),
         });
         writer.merge(
           result.toUIMessageStream({
@@ -78,12 +80,14 @@ export class MigratedChatController {
   /** Recipe 3: a plain text delta stream — one option flip. */
   @Post('text')
   @AiStream({ format: 'text' })
-  text(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  async text(
+    @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
+  ): Promise<AiStreamResult> {
     const prompt = lastUserText(body);
 
     return streamText({
       model: createMockModel(`Echo: ${prompt}`),
-      messages: convertToModelMessages(body.messages as never),
+      messages: await convertToModelMessages(body.messages as never),
     });
   }
 }

@@ -81,10 +81,10 @@ import { convertToModelMessages, streamText } from 'ai';
 export class ChatController {
   @Post()
   @AiStream()
-  chat(@Body() body: { messages: UIMessage[] }) {
+  async chat(@Body() body: { messages: UIMessage[] }) {
     return streamText({
       model: 'openai/gpt-4o',
-      messages: convertToModelMessages(body.messages),
+      messages: await convertToModelMessages(body.messages),
     });
   }
 }
@@ -203,8 +203,11 @@ never opens:
 ```ts
 @Post()
 @AiStream()
-chat(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
-  return streamText({ model, messages: convertToModelMessages(body.messages) });
+async chat(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  return streamText({
+    model,
+    messages: await convertToModelMessages(body.messages),
+  });
 }
 ```
 
@@ -283,10 +286,16 @@ Only ever map to vetted, non-sensitive messages. See
 - [ ] Drop the `express`-typed `Response` import — the same handler now runs on
       Fastify too.
 
-## 6. Version note (v4 → v5)
+## 6. Version note (v5 → v6)
 
-`@nest-native/ai-sdk` targets the Vercel AI SDK **v5** stream protocol and pins
-`ai` to `^5`. The v4 → v5 rework changed the stream protocol (the UI message
-stream and `convertToModelMessages` shown here are v5 APIs); pre-v5 is not
-supported. If you are still on v4, upgrade the AI SDK first, then apply this
-guide.
+`@nest-native/ai-sdk` tracks the current Vercel AI SDK major: the `ai` peer is
+`^6`. The UI message stream and `convertToModelMessages` shown here are v6 APIs;
+older majors are not supported. If you are still on v5, upgrade the AI SDK first,
+then apply this guide. Two v6 specifics to watch for:
+
+- `convertToModelMessages` is now async — `await` it before passing the result
+  to `streamText`.
+- A `streamText` result's inferred type references the AI SDK's internal
+  `Output` type, which TypeScript cannot name as a public method's return type
+  (`error TS4053`). Annotate the handler with the exported `AiStreamResult`
+  type (or `Promise<AiStreamResult>`) — the contract `@AiStream` consumes.

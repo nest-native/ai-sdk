@@ -46,8 +46,11 @@ pipe rejects bad input as a pre-stream HTTP `400`:
 ```ts
 @Post()
 @AiStream()
-chat(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
-  return streamText({ model, messages: convertToModelMessages(body.messages) });
+async chat(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  return streamText({
+    model,
+    messages: await convertToModelMessages(body.messages),
+  });
 }
 ```
 

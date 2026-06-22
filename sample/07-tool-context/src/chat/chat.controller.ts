@@ -2,6 +2,7 @@ import {
   AiContext,
   AiExecutionContext,
   AiStream,
+  AiStreamResult,
 } from '@nest-native/ai-sdk';
 import { Controller, Post, UseGuards } from '@nestjs/common';
 import { jsonSchema, streamText, tool } from 'ai';
@@ -29,7 +30,7 @@ const WHOAMI = 'whoami';
 export class ChatController {
   @Post()
   @AiStream()
-  chat(@AiContext() ctx: AiExecutionContext) {
+  chat(@AiContext() ctx: AiExecutionContext): AiStreamResult {
     const request = ctx.request as { user?: AuthenticatedUser };
 
     return streamText({
