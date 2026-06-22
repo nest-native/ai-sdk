@@ -7,7 +7,7 @@ import { LanguageModel, simulateReadableStream } from 'ai';
  * (`'openai/gpt-4o'`). Swapping in a real model is a one-liner and `@AiStream`
  * does not care which model produced the result — but to keep this sample
  * offline (no API keys, no network) and its smoke test exact, we build a
- * minimal v2 language model around the AI SDK's public `simulateReadableStream`
+ * minimal v3 language model around the AI SDK's public `simulateReadableStream`
  * helper, exactly as the other samples do.
  *
  * The reply echoes the migrated prompt so the before/after controllers and both
@@ -17,7 +17,7 @@ export function createMockModel(reply: string): LanguageModel {
   const words = reply.split(' ');
 
   const model = {
-    specificationVersion: 'v2',
+    specificationVersion: 'v3',
     provider: 'mock',
     modelId: 'migration-mock-model',
     supportedUrls: {},
@@ -37,11 +37,19 @@ export function createMockModel(reply: string): LanguageModel {
           { type: 'text-end', id: '1' },
           {
             type: 'finish',
-            finishReason: 'stop',
+            finishReason: { unified: 'stop', raw: undefined },
             usage: {
-              inputTokens: 8,
-              outputTokens: words.length,
-              totalTokens: 8 + words.length,
+              inputTokens: {
+                total: 8,
+                noCache: 8,
+                cacheRead: 0,
+                cacheWrite: 0,
+              },
+              outputTokens: {
+                total: words.length,
+                text: words.length,
+                reasoning: 0,
+              },
             },
           },
         ],

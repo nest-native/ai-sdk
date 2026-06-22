@@ -1,4 +1,4 @@
-import { AiAbortSignal, AiStream } from '@nest-native/ai-sdk';
+import { AiAbortSignal, AiStream, AiStreamResult } from '@nest-native/ai-sdk';
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { streamText } from 'ai';
 import { AbortableMockModel } from './mock-model';
@@ -35,7 +35,7 @@ export class ChatController {
   chat(
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
     @AiAbortSignal() signal: AbortSignal,
-  ) {
+  ): AiStreamResult {
     return streamText({
       model: this.abortable.model,
       prompt: body.prompt,

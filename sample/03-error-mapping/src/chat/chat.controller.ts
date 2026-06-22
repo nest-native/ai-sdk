@@ -1,4 +1,4 @@
-import { AiStream } from '@nest-native/ai-sdk';
+import { AiStream, AiStreamResult } from '@nest-native/ai-sdk';
 import {
   Body,
   Controller,
@@ -51,7 +51,9 @@ export class ChatController {
   // is the AI SDK's secret-safe default — the raw error is hidden.
   @Post('default')
   @AiStream()
-  default(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  default(
+    @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
+  ): AiStreamResult {
     return streamText({
       model: createFailingMockModel(body.prompt, new Error(SECRET_FAILURE)),
       prompt: body.prompt,
@@ -63,7 +65,9 @@ export class ChatController {
   // contain credentials.
   @Post('mapped')
   @AiStream({ onError: () => 'The model is temporarily unavailable.' })
-  mapped(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  mapped(
+    @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
+  ): AiStreamResult {
     return streamText({
       model: createFailingMockModel(body.prompt, new Error(SECRET_FAILURE)),
       prompt: body.prompt,
@@ -73,7 +77,9 @@ export class ChatController {
   // The happy path still streams cleanly with a mapper configured.
   @Post('ok')
   @AiStream({ onError: () => 'The model is temporarily unavailable.' })
-  ok(@Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest) {
+  ok(
+    @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
+  ): AiStreamResult {
     return streamText({
       model: createWorkingMockModel('Hello from the model'),
       prompt: body.prompt,

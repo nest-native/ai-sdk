@@ -35,9 +35,11 @@ package. The project resists it.
 
 ## Known Risks
 
-- **AI SDK breaking changes.** v4 → v5 was substantial; future majors will also
-  break the stream protocol. The package pins majors and budgets for re-issue
-  work at each major.
+- **AI SDK breaking changes.** v5 → v6 reworked the provider specification
+  (language-model interface `v2` → `v3`) and made `convertToModelMessages`
+  async; future majors will also break. The package tracks the current major and
+  adopts each new one — migrating source, samples, and fixtures — rather than
+  holding a legacy major.
 - **`@Sse` bug evolution.** If Nest fixes `#12670`, parts of the design may be
   re-evaluated at the corresponding Nest minor.
 - **Provider-specific quirks leaking in.** The AI SDK normalizes most of this, but

@@ -8,6 +8,38 @@ package release is useful for users.
 
 ## Unreleased
 
+## 0.3.0 - 2026-06-22
+
+Adopts the current major of the Vercel AI SDK (`ai ^6`) and `zod ^4`. This is a
+deliberate breaking peer change: consumers must be on `ai@^6`. The package keeps
+`"dependencies": {}` and still depends on the AI SDK only structurally (via the
+`pipe*ToResponse` contract), so the core decorator/interceptor code is
+unchanged — the migration is in the peer range, samples, and test fixtures.
+
+### Changed (breaking)
+
+- **Peer dependency: `ai` is now `^6`** (was `^5`). The AI SDK v6 provider
+  specification moved from language-model interface `v2` to `v3`, so the test
+  fixtures and sample mock models were migrated to the `v3` stream-part shape
+  (`specificationVersion: 'v3'`, the structured `finishReason: { unified, raw }`,
+  and the nested `usage.inputTokens`/`usage.outputTokens` token-detail objects).
+  `@nest-native/ai-sdk`'s own runtime is unaffected.
+
+### Migration notes
+
+- `convertToModelMessages` is now async in v6 (returns `Promise<ModelMessage[]>`);
+  `await` it before passing the result to `streamText`. The migration sample's
+  handlers are now `async` accordingly.
+- In v6 a `streamText` result's type references the AI SDK's internal `Output`
+  type, which TypeScript cannot name when it is the inferred return type of a
+  public controller method (`error TS4053`). Annotate such handlers with the
+  package's exported structural `AiStreamResult` type (or
+  `Promise<AiStreamResult>`) — the same contract `@AiStream` consumes. All
+  samples now do this.
+- `zod` is adopted at `^4` across the samples. The library has no `zod`
+  dependency of its own; consumers bring their own schema library, and `ai@^6`
+  already permits `zod@^3.25 || ^4`.
+
 ## 0.2.0 - 2026-06-15
 
 Completes the v1 parameter-decorator surface with `@AiContext`, the last

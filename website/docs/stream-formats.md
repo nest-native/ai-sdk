@@ -13,8 +13,11 @@ need no option.
 ```ts
 @Post()
 @AiStream() // format: 'ui-message'
-chat(@Body() body: ChatDto) {
-  return streamText({ model, messages: convertToModelMessages(body.messages) });
+async chat(@Body() body: ChatDto) {
+  return streamText({
+    model,
+    messages: await convertToModelMessages(body.messages),
+  });
 }
 ```
 

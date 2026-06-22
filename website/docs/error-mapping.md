@@ -15,9 +15,12 @@ with the appropriate status. The stream never opens.
 @Post()
 @AiStream()
 @UseGuards(ApiKeyGuard) // rejects → HTTP 401, never a stream frame
-chat(@Body(new ZodValidationPipe(schema)) body: ChatRequest) {
+async chat(@Body(new ZodValidationPipe(schema)) body: ChatRequest) {
   // bad input → pre-stream HTTP 400
-  return streamText({ model, messages: convertToModelMessages(body.messages) });
+  return streamText({
+    model,
+    messages: await convertToModelMessages(body.messages),
+  });
 }
 ```
 
