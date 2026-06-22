@@ -111,6 +111,12 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   cancellation, Express + Fastify parity, all three stream types.
 - Documentation and README follow Nest-style clarity without claiming
   official Nest or Vercel AI SDK status.
+- **Strictness scope.** The non-negotiables (100% coverage,
+  cognitive-complexity ≤ 15, zero published runtime deps, isolated
+  major-version review) govern the *core* published package
+  (`packages/ai-sdk`). Non-core code — `sample/*`, the `website/`, and dev
+  tooling — uses lighter rules: their dependency updates (including majors)
+  may merge on green CI without the core's major-isolation ceremony.
 
 ### 7. When In Doubt
 
@@ -137,6 +143,12 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   - AI SDK is a fast-moving peer; review changelog at every bump.
   - Inspect lifecycle scripts on every dep change.
   - Flag unpinned Git/URL dependencies.
+- **Audit scope.** The `security:audit` release gate audits the *published*
+  surface — `npm audit --omit=dev --audit-level=high`. Since the package
+  publishes `"dependencies": {}`, this is exactly what consumers install.
+  Advisories confined to dev/peer/build tooling or the docs `website/` are
+  tracked and patched via Dependabot but do not block releases — they cannot
+  reach consumers. Patch them in their own PRs.
 - Application security checks:
   - Auth bypass through `@AiStream` (pre-stream guard checks MUST run;
     verify in tests).
