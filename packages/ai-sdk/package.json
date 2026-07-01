@@ -1,6 +1,6 @@
 {
   "name": "@nest-native/ai-sdk",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Decorator-first NestJS streaming primitive for the Vercel AI SDK that preserves the full Nest enhancer pipeline",
   "keywords": [
     "nestjs",
@@ -57,7 +57,7 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@nestjs/platform-fastify": "^11.0.0",
-    "ai": "^6",
+    "ai": "^7",
     "reflect-metadata": "^0.1.12 || ^0.2.0",
     "rxjs": "^7.0.0"
   },
@@ -72,7 +72,7 @@
   "devDependencies": {
     "@nestjs/common": "^11.1.27",
     "@nestjs/core": "^11.1.27",
-    "ai": "^6",
+    "ai": "^7",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typescript": "^6.0.3"

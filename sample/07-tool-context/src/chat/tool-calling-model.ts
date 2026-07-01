@@ -30,7 +30,7 @@ export function createToolCallingModel(toolName: string): LanguageModel {
   ];
 
   const model = {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'tool-calling-mock-model',
     supportedUrls: {},

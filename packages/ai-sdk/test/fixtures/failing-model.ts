@@ -1,11 +1,11 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV3,
-  LanguageModelV3StreamPart,
+  LanguageModelV4,
+  LanguageModelV4StreamPart,
 } from '@ai-sdk/provider';
 
 /**
- * Build a deterministic AI SDK v2 language model that streams a few text deltas
+ * Build a deterministic AI SDK v4 language model that streams a few text deltas
  * and then fails *mid-stream* with the supplied error.
  *
  * This is the in-stream half of the error-mapping tests: the stream has already
@@ -21,9 +21,9 @@ import type {
 export function createFailingLanguageModel(
   prefix: string,
   error: Error,
-): LanguageModelV3 {
+): LanguageModelV4 {
   const words = prefix.split(' ');
-  const chunks: LanguageModelV3StreamPart[] = [
+  const chunks: LanguageModelV4StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     { type: 'text-start', id: '1' },
     ...words.map((word, index) => ({
@@ -35,7 +35,7 @@ export function createFailingLanguageModel(
   ];
 
   return {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'failing-mock-model',
     supportedUrls: {},

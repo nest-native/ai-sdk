@@ -1,11 +1,11 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV3,
-  LanguageModelV3StreamPart,
+  LanguageModelV4,
+  LanguageModelV4StreamPart,
 } from '@ai-sdk/provider';
 
 /**
- * Build a deterministic AI SDK v2 language model that emits a single tool call
+ * Build a deterministic AI SDK v4 language model that emits a single tool call
  * for `toolName` (with empty `{}` arguments) and then finishes.
  *
  * `streamText` invokes the matching tool's `execute` closure when it consumes
@@ -13,8 +13,8 @@ import type {
  * the test prove a tool `execute` can read request-scoped data captured via
  * `@AiContext`. Fully offline — no provider, no API keys.
  */
-export function createToolCallingModel(toolName: string): LanguageModelV3 {
-  const chunks: LanguageModelV3StreamPart[] = [
+export function createToolCallingModel(toolName: string): LanguageModelV4 {
+  const chunks: LanguageModelV4StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     {
       type: 'tool-call',
@@ -42,7 +42,7 @@ export function createToolCallingModel(toolName: string): LanguageModelV3 {
   ];
 
   return {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'tool-calling-mock-model',
     supportedUrls: {},

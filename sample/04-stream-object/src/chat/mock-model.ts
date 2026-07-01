@@ -38,7 +38,7 @@ export function createRecipeMockModel(recipe: Recipe): LanguageModel {
   ];
 
   const model = {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'stream-object-mock-model',
     supportedUrls: {},

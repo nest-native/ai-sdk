@@ -68,7 +68,7 @@ export function createFailingMockModel(
 
 function asModel(chunks: unknown[]): LanguageModel {
   const model = {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'error-mapping-mock-model',
     supportedUrls: {},

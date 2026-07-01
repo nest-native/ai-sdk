@@ -8,6 +8,38 @@ package release is useful for users.
 
 ## Unreleased
 
+## 0.4.0 - 2026-06-30
+
+Adopts the current major of the Vercel AI SDK (`ai ^7`) and `@ai-sdk/provider
+^4`. This is a deliberate breaking peer change: consumers must be on `ai@^7`.
+The package keeps `"dependencies": {}` and still depends on the AI SDK only
+structurally (via the `pipe*ToResponse` contract), so the core
+decorator/interceptor code is unchanged — the migration is in the peer range,
+samples, and test fixtures.
+
+### Changed (breaking)
+
+- **Peer dependency: `ai` is now `^7`** (was `^6`). The AI SDK v7 provider
+  specification moved the language-model interface from `v3` to `v4`, so the
+  test fixtures and sample mock models were migrated to
+  `specificationVersion: 'v4'` and the `LanguageModelV4` stream-part types. The
+  stream-part *shape* is otherwise unchanged from v3 — the structured
+  `finishReason: { unified, raw }` and the nested
+  `usage.inputTokens`/`usage.outputTokens` token-detail objects carry over — so
+  the only fixture edits are the interface-version bump.
+  `@nest-native/ai-sdk`'s own runtime is unaffected.
+
+### Migration notes
+
+- Upgrade the AI SDK to `ai@^7` before upgrading `@nest-native/ai-sdk`. No
+  application code change is required for the `@AiStream`, `@AiAbortSignal`, and
+  `@AiContext` decorators themselves: the package consumes `streamText` /
+  `streamObject` results through the same structural `pipe*ToResponse` contract,
+  which v7 still provides.
+- Custom UI message streams built with `createUIMessageStream` continue to use
+  the AI SDK's standalone `pipeUIMessageStreamToResponse({ response, stream })`
+  helper (see the `05-stream-ui` sample), unchanged from v6.
+
 ## 0.3.0 - 2026-06-22
 
 Adopts the current major of the Vercel AI SDK (`ai ^6`) and `zod ^4`. This is a

@@ -286,12 +286,12 @@ Only ever map to vetted, non-sensitive messages. See
 - [ ] Drop the `express`-typed `Response` import — the same handler now runs on
       Fastify too.
 
-## 6. Version note (v5 → v6)
+## 6. Version note (current major: v7)
 
 `@nest-native/ai-sdk` tracks the current Vercel AI SDK major: the `ai` peer is
-`^6`. The UI message stream and `convertToModelMessages` shown here are v6 APIs;
-older majors are not supported. If you are still on v5, upgrade the AI SDK first,
-then apply this guide. Two v6 specifics to watch for:
+`^7`. The UI message stream and `convertToModelMessages` shown here are current
+AI SDK APIs; older majors are not supported. If you are on an older major,
+upgrade the AI SDK first, then apply this guide. Two specifics to watch for:
 
 - `convertToModelMessages` is now async — `await` it before passing the result
   to `streamText`.
