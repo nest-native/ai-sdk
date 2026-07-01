@@ -56,7 +56,7 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   - `@AiAbortSignal()` plumbing with verified disconnect-cancels-AI-SDK-call
     behavior
   - Pre-stream vs in-stream error mapping (HTTP vs stream-error frame)
-  - `streamText`, `streamObject`, `streamUI` (or v6 equivalents) supported
+  - `streamText`, `streamObject`, `streamUI` (or v7 equivalents) supported
   - Showcase sample + at least four focused samples
 - v1 does NOT ship:
   - Agent framework / tool execution helpers (use Mastra, LangGraph, etc.)
@@ -165,7 +165,7 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 
 - Version drift between `packages/ai-sdk` and `sample/*` is a release blocker.
 - The AI SDK major is tracked, not pinned to a legacy version: the peer range
-  follows the current major (`ai ^6`). When the AI SDK ships a new major, adopt
+  follows the current major (`ai ^7`). When the AI SDK ships a new major, adopt
   it — bump the peer range, migrate the source/samples/fixtures to the new API,
   and release it as a breaking peer change — rather than holding an old major.
   Document the supported range and non-support of older majors prominently.

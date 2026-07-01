@@ -17,7 +17,7 @@ export function createMockModel(reply: string): LanguageModel {
   const words = reply.split(' ');
 
   const model = {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'mock-model',
     supportedUrls: {},

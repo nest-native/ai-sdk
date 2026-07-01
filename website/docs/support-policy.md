@@ -8,7 +8,7 @@ The supported runtime and peer lines for `@nest-native/ai-sdk`.
 | :--- | :--- |
 | Node.js | `>=20` |
 | NestJS | `11.x` |
-| Vercel AI SDK (`ai`) | `^6` (tracks the current major; older majors not supported) |
+| Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
 | Validation | Zod and class-validator, both app-owned |
 
@@ -19,11 +19,11 @@ ecosystems they actually use.
 ## AI SDK Major Version
 
 The AI SDK major is critical. The peer range tracks the **current major**:
-`ai ^6`. Older majors are not supported — each AI SDK major reworks the stream
-protocol and/or the provider specification (v6 moved the language-model provider
-interface from `v2` to `v3`), so an application on an older major must upgrade
+`ai ^7`. Older majors are not supported — each AI SDK major reworks the stream
+protocol and/or the provider specification (v7 moved the language-model provider
+interface from `v3` to `v4`), so an application on an older major must upgrade
 the AI SDK before adopting the matching release of this package. See the
-[Migration Guide](migration.md) for the v5 → v6 note.
+[Migration Guide](migration.md) for the version note.
 
 Rather than holding a legacy major, the package adopts each new AI SDK major:
 the peer range is bumped, the source/samples/fixtures are migrated to the new

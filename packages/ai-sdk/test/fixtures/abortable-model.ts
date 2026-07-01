@@ -1,7 +1,7 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV3,
-  LanguageModelV3StreamPart,
+  LanguageModelV4,
+  LanguageModelV4StreamPart,
 } from '@ai-sdk/provider';
 
 /**
@@ -20,7 +20,7 @@ import type {
  *   activity past the test (which `node:test` would flag as a failure).
  */
 export interface AbortableModel {
-  readonly model: LanguageModelV3;
+  readonly model: LanguageModelV4;
   /** The `abortSignal` captured from the most recent `doStream` call. */
   readonly capturedSignal: () => AbortSignal | undefined;
   /** Resolves once `doStream` has been invoked at least once. */
@@ -37,7 +37,7 @@ export function createAbortableModel(
   chunkDelayInMs = 50,
 ): AbortableModel {
   const words = reply.split(' ');
-  const chunks: LanguageModelV3StreamPart[] = [
+  const chunks: LanguageModelV4StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     { type: 'text-start', id: '1' },
     ...words.map((word, index) => ({
@@ -76,8 +76,8 @@ export function createAbortableModel(
     signalSettled = resolve;
   });
 
-  const model: LanguageModelV3 = {
-    specificationVersion: 'v3',
+  const model: LanguageModelV4 = {
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'abortable-mock-model',
     supportedUrls: {},
@@ -92,6 +92,7 @@ export function createAbortableModel(
         stream: trackTeardown(
           simulateReadableStream({ chunks, chunkDelayInMs }),
           signalSettled,
+          options.abortSignal,
         ),
       };
     },
@@ -109,12 +110,32 @@ export function createAbortableModel(
  * Wrap a source stream so `onSettled` fires once it is fully drained or
  * cancelled — whichever happens first. A mid-stream client disconnect cancels
  * the stream, so this resolves the moment the server tears the model call down.
+ *
+ * A real provider observes `options.abortSignal` and tears its own stream down
+ * when the request is aborted — that is what stops upstream billing. The AI
+ * SDK's `simulateReadableStream` does not, so we bridge the signal here: from
+ * AI SDK v7, `streamText` no longer force-cancels the model's stream on abort
+ * (it relies on the provider honoring the signal), so the mock must cancel
+ * itself to settle, exactly as a real provider would. Without this the aborted
+ * source would keep ticking and `onSettled` would never fire.
  */
 function trackTeardown<T>(
   source: ReadableStream<T>,
   onSettled: () => void,
+  abortSignal?: AbortSignal,
 ): ReadableStream<T> {
   const reader = source.getReader();
+
+  const settleOnAbort = () => {
+    reader.cancel(abortSignal?.reason).catch(() => undefined);
+    onSettled();
+  };
+
+  if (abortSignal?.aborted) {
+    settleOnAbort();
+  } else {
+    abortSignal?.addEventListener('abort', settleOnAbort, { once: true });
+  }
 
   return new ReadableStream<T>({
     async pull(controller) {
@@ -135,6 +156,7 @@ function trackTeardown<T>(
       }
     },
     async cancel(reason) {
+      abortSignal?.removeEventListener('abort', settleOnAbort);
       await reader.cancel(reason);
       onSettled();
     },

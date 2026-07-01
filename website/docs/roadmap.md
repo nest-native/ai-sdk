@@ -35,11 +35,11 @@ package. The project resists it.
 
 ## Known Risks
 
-- **AI SDK breaking changes.** v5 → v6 reworked the provider specification
-  (language-model interface `v2` → `v3`) and made `convertToModelMessages`
-  async; future majors will also break. The package tracks the current major and
-  adopts each new one — migrating source, samples, and fixtures — rather than
-  holding a legacy major.
+- **AI SDK breaking changes.** Each AI SDK major reworks the provider
+  specification (v6 moved the language-model interface `v2` → `v3`; v7 moved it
+  `v3` → `v4`) and can change stream helpers; future majors will also break. The
+  package tracks the current major and adopts each new one — migrating source,
+  samples, and fixtures — rather than holding a legacy major.
 - **`@Sse` bug evolution.** If Nest fixes `#12670`, parts of the design may be
   re-evaluated at the corresponding Nest minor.
 - **Provider-specific quirks leaking in.** The AI SDK normalizes most of this, but

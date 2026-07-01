@@ -1,11 +1,11 @@
 import { simulateReadableStream } from 'ai';
 import type {
-  LanguageModelV3,
-  LanguageModelV3StreamPart,
+  LanguageModelV4,
+  LanguageModelV4StreamPart,
 } from '@ai-sdk/provider';
 
 /**
- * Build a deterministic AI SDK v3 language model that streams the supplied
+ * Build a deterministic AI SDK v4 language model that streams the supplied
  * reply word-by-word.
  *
  * This avoids importing `ai/test`, whose CommonJS entry point re-exports a
@@ -13,9 +13,9 @@ import type {
  * re-exported from the main `ai` package, so the helper stays on supported
  * public API while remaining fully offline (no provider, no API keys).
  */
-export function createMockLanguageModel(reply: string): LanguageModelV3 {
+export function createMockLanguageModel(reply: string): LanguageModelV4 {
   const words = reply.split(' ');
-  const chunks: LanguageModelV3StreamPart[] = [
+  const chunks: LanguageModelV4StreamPart[] = [
     { type: 'stream-start', warnings: [] },
     { type: 'text-start', id: '1' },
     ...words.map((word, index) => ({
@@ -44,7 +44,7 @@ export function createMockLanguageModel(reply: string): LanguageModelV3 {
   ];
 
   return {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'mock-model',
     supportedUrls: {},

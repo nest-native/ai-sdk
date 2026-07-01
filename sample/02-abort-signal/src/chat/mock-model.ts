@@ -62,7 +62,7 @@ export function createAbortableMockModel(
   });
 
   const model = {
-    specificationVersion: 'v3',
+    specificationVersion: 'v4',
     provider: 'mock',
     modelId: 'abortable-mock-model',
     supportedUrls: {},
@@ -75,6 +75,26 @@ export function createAbortableMockModel(
 
       const source = simulateReadableStream({ chunks, chunkDelayInMs });
       const reader = source.getReader();
+
+      // A real provider observes `options.abortSignal` and tears its own stream
+      // down when the request is aborted — that is what stops upstream billing.
+      // `simulateReadableStream` does not, and from AI SDK v7 `streamText` no
+      // longer force-cancels the model stream on abort (it relies on the
+      // provider honoring the signal), so bridge it here: cancel the source and
+      // settle the moment the disconnect propagates, exactly as a real provider
+      // would.
+      const settleOnAbort = () => {
+        void reader.cancel(options.abortSignal?.reason).catch(() => undefined);
+        markSettled();
+      };
+
+      if (options.abortSignal?.aborted) {
+        settleOnAbort();
+      } else {
+        options.abortSignal?.addEventListener('abort', settleOnAbort, {
+          once: true,
+        });
+      }
 
       const stream = new ReadableStream({
         async pull(controller) {
@@ -90,6 +110,7 @@ export function createAbortableMockModel(
           controller.enqueue(value);
         },
         async cancel(reason) {
+          options.abortSignal?.removeEventListener('abort', settleOnAbort);
           await reader.cancel(reason);
           markSettled();
         },

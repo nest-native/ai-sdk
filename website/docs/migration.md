@@ -100,10 +100,10 @@ The cookbook's `createUIMessageStream` + standalone
 - [ ] Drop the `express`-typed `Response` import — the same handler now runs on
       Fastify too.
 
-## Version note (v5 → v6)
+## Version note (current major: v7)
 
 `@nest-native/ai-sdk` tracks the current Vercel AI SDK major: the `ai` peer is
-`^6`. The v6 rework changed the provider specification (language-model interface
-`v2` → `v3`) and made `convertToModelMessages` async; older majors are not
-supported. Upgrade the AI SDK to v6 before applying this guide. See
+`^7`. The v7 rework moved the provider specification (language-model interface
+`v3` → `v4`), and `convertToModelMessages` is async; older majors are not
+supported. Upgrade the AI SDK to v7 before applying this guide. See
 [Support Policy](support-policy.md).
