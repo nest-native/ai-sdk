@@ -7,7 +7,7 @@ import {
 import { Controller, Post, UseGuards } from '@nestjs/common';
 import { jsonSchema, streamText, tool } from 'ai';
 import { ApiKeyGuard, AuthenticatedUser } from './api-key.guard';
-import { createToolCallingModel } from './tool-calling-model';
+import { createToolCallingModel } from '@nest-native/ai-sdk/testing';
 
 const WHOAMI = 'whoami';
 

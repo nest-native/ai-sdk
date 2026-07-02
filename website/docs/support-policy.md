@@ -6,7 +6,7 @@ The supported runtime and peer lines for `@nest-native/ai-sdk`.
 
 | Item | Supported line |
 | :--- | :--- |
-| Node.js | `>=20` |
+| Node.js | `>=22` (required by `ai@7`) |
 | NestJS | `11.x` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
@@ -15,6 +15,10 @@ The supported runtime and peer lines for `@nest-native/ai-sdk`.
 The published package keeps `"dependencies": {}`. The AI SDK and the NestJS
 packages are declared as `peerDependencies`, so applications install only the
 ecosystems they actually use.
+
+The Node.js line follows the AI SDK's own requirement: `ai@7` and the
+`@ai-sdk/*` v4-spec packages declare `engines.node: '>=22'`, so this package
+does too rather than overstating support the peer stack cannot deliver.
 
 ## AI SDK Major Version
 

@@ -5,7 +5,7 @@ packages, using `node:test` and `c8`.
 
 ## Gates
 
-- Package build, typecheck, and tests on Node.js **20 and 22**.
+- Package build, typecheck, and tests on Node.js **22** (the supported line).
 - Coverage with `c8`, enforced at **100%** for statements, branches, functions,
   and lines on the package source.
 - Cognitive complexity enforced with SonarJS at a threshold of **15** per source

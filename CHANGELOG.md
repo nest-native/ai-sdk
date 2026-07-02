@@ -8,6 +8,44 @@ package release is useful for users.
 
 ## Unreleased
 
+## 0.5.0 - 2026-07-01
+
+Ships a public testing entrypoint and aligns the supported Node.js line with
+the AI SDK's own engines requirement.
+
+### Changed (breaking)
+
+- **Node.js support is now `>=22`** (was `>=20`). `ai@7`, `@ai-sdk/provider@4`,
+  and the `@ai-sdk/*` provider packages all declare `engines.node: '>=22'`, so
+  `>=20` overstated what the peer stack can actually deliver — a Node 20
+  install already warned (or failed under `engine-strict`) at the `ai` peer.
+  The `engines` field now states the real requirement, the documented support
+  line follows it, and CI no longer tests Node 20.
+
+### Added
+
+- **`@nest-native/ai-sdk/testing`** — deterministic, fully offline AI SDK v4
+  mock language models for streaming tests, replacing the hand-rolled
+  v4-chunk-boilerplate mocks previously copied across every sample and the
+  package's own test fixtures. `createMockLanguageModel({ text | chunks,
+  error?, chunkDelayInMs?, respectAbortSignal? })` streams word deltas from a
+  `string` (or exact deltas from a `string[]`), can fail mid-stream with the
+  documented in-stream `error` frame, and can honor `doStream`'s `abortSignal`
+  the way a real provider does; every model exposes
+  `capturedSignal()`/`started()`/`settled()` observers for disconnect tests.
+  `createToolCallingModel(toolName)` emits a single tool call so a tool
+  `execute` closure runs. The entrypoint is built on the AI SDK's public
+  `simulateReadableStream` and adds no runtime dependencies
+  (`"dependencies": {}` stays; `ai` remains a peer).
+
+### Migration notes
+
+- Upgrade the runtime to Node.js `>=22` before adopting this release. There are
+  no API changes: the `@AiStream`/`@AiAbortSignal`/`@AiContext` decorator and
+  module surface is unchanged from `0.4.0`.
+- If your tests hand-roll a v4 mock model the way the samples used to, you can
+  replace it with `createMockLanguageModel` from `@nest-native/ai-sdk/testing`.
+
 ## 0.4.0 - 2026-06-30
 
 Adopts the current major of the Vercel AI SDK (`ai ^7`) and `@ai-sdk/provider

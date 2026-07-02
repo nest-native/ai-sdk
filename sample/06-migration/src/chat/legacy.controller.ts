@@ -1,3 +1,4 @@
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
 import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import type { ServerResponse } from 'node:http';
 import {
@@ -8,7 +9,6 @@ import {
 } from 'ai';
 import { ApiKeyGuard } from '../common/api-key.guard';
 import { ChatRequest } from './chat.schema';
-import { createMockModel } from './mock-model';
 
 /**
  * BEFORE: the official AI SDK NestJS cookbook recipe, ported verbatim in shape.
@@ -46,7 +46,7 @@ export class LegacyChatController {
   ): Promise<void> {
     const prompt = lastUserText(body);
     const result = streamText({
-      model: createMockModel(`You said: ${prompt}`),
+      model: createMockLanguageModel({ text: `You said: ${prompt}` }),
       messages: await convertToModelMessages(body.messages as never),
     });
 
@@ -66,7 +66,7 @@ export class LegacyChatController {
         });
 
         const result = streamText({
-          model: createMockModel(`You said: ${prompt}`),
+          model: createMockLanguageModel({ text: `You said: ${prompt}` }),
           messages: await convertToModelMessages(body.messages as never),
         });
         writer.merge(
@@ -90,7 +90,7 @@ export class LegacyChatController {
   ): Promise<void> {
     const prompt = lastUserText(body);
     const result = streamText({
-      model: createMockModel(`Echo: ${prompt}`),
+      model: createMockLanguageModel({ text: `Echo: ${prompt}` }),
       messages: await convertToModelMessages(body.messages as never),
     });
 

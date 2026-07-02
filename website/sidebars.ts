@@ -24,6 +24,7 @@ const sidebars: SidebarsConfig = {
         'api-reference',
       ],
     },
+    'testing',
     'migration',
     {
       type: 'category',

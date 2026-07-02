@@ -13,7 +13,8 @@
     "constants.ts",
     "decorators/ai-stream.decorator.ts",
     "index.ts",
-    "interfaces.ts"
+    "interfaces.ts",
+    "testing/index.ts"
   ],
   "exclude": ["dist", "node_modules", "test/**/*", "*.spec.ts"]
 }

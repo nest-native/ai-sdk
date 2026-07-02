@@ -17,9 +17,9 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   explicitly avoiding `@Sse`'s known bugs (`nestjs/nest#12670`: connection
   opens before the handler runs).
 - Current stabilization support line:
-  - Node.js `>=20`
+  - Node.js `>=22` (required by `ai@7`)
   - NestJS `11.x`
-  - `ai` (Vercel AI SDK) `^6` — track the current major; adopt new majors
+  - `ai` (Vercel AI SDK) `^7` — track the current major; adopt new majors
     rather than pinning to an old one. Older majors are not supported; a
     major bump is a deliberate breaking peer change (see §10).
 - Full NestJS enhancer pipeline integration is NON-NEGOTIABLE:

@@ -13,8 +13,7 @@ import {
 } from '@nestjs/common';
 import { APP_INTERCEPTOR, NestFactory } from '@nestjs/core';
 import { streamText } from 'ai';
-import { createFailingLanguageModel } from './fixtures/failing-model';
-import { createMockLanguageModel } from './fixtures/mock-model';
+import { createMockLanguageModel } from '../testing';
 import { AiStream } from '../decorators/ai-stream.decorator';
 import { AiStreamInterceptor } from '../ai-stream.interceptor';
 import { AiModule } from '../ai.module';
@@ -51,10 +50,10 @@ class ChatController {
   @AiStream()
   default() {
     return streamText({
-      model: createFailingLanguageModel(
-        'Partial answer',
-        new Error(SECRET_FAILURE),
-      ),
+      model: createMockLanguageModel({
+        text: 'Partial answer',
+        error: new Error(SECRET_FAILURE),
+      }),
       prompt: 'hi',
     });
   }
@@ -65,10 +64,10 @@ class ChatController {
   @AiStream({ onError: () => 'The model is temporarily unavailable.' })
   mapped() {
     return streamText({
-      model: createFailingLanguageModel(
-        'Partial answer',
-        new Error(SECRET_FAILURE),
-      ),
+      model: createMockLanguageModel({
+        text: 'Partial answer',
+        error: new Error(SECRET_FAILURE),
+      }),
       prompt: 'hi',
     });
   }
@@ -78,7 +77,7 @@ class ChatController {
   @AiStream({ onError: () => 'The model is temporarily unavailable.' })
   ok() {
     return streamText({
-      model: createMockLanguageModel('Hello world'),
+      model: createMockLanguageModel({ text: 'Hello world' }),
       prompt: 'hi',
     });
   }
@@ -89,10 +88,10 @@ class ChatController {
   @AiStream({ format: 'text', onError: () => 'should be ignored for text' })
   text() {
     return streamText({
-      model: createFailingLanguageModel(
-        'Partial answer',
-        new Error(SECRET_FAILURE),
-      ),
+      model: createMockLanguageModel({
+        text: 'Partial answer',
+        error: new Error(SECRET_FAILURE),
+      }),
       prompt: 'hi',
     });
   }
@@ -111,10 +110,10 @@ class ModuleMapperController {
   @AiStream()
   fromModuleDefault() {
     return streamText({
-      model: createFailingLanguageModel(
-        'Partial answer',
-        new Error(SECRET_FAILURE),
-      ),
+      model: createMockLanguageModel({
+        text: 'Partial answer',
+        error: new Error(SECRET_FAILURE),
+      }),
       prompt: 'hi',
     });
   }

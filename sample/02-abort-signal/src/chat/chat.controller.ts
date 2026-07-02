@@ -1,7 +1,7 @@
 import { AiAbortSignal, AiStream, AiStreamResult } from '@nest-native/ai-sdk';
+import { MockLanguageModel } from '@nest-native/ai-sdk/testing';
 import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { streamText } from 'ai';
-import { AbortableMockModel } from './mock-model';
 import { ChatRequest, chatRequestSchema } from './chat.schema';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
 
@@ -27,7 +27,7 @@ export const CHAT_MODEL = Symbol('CHAT_MODEL');
 @Controller('chat')
 export class ChatController {
   constructor(
-    @Inject(CHAT_MODEL) private readonly abortable: AbortableMockModel,
+    @Inject(CHAT_MODEL) private readonly model: MockLanguageModel,
   ) {}
 
   @Post()
@@ -37,7 +37,7 @@ export class ChatController {
     @AiAbortSignal() signal: AbortSignal,
   ): AiStreamResult {
     return streamText({
-      model: this.abortable.model,
+      model: this.model,
       prompt: body.prompt,
       abortSignal: signal,
     });

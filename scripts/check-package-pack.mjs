@@ -32,6 +32,8 @@ try {
     'package.json',
     'dist/index.js',
     'dist/index.d.ts',
+    'dist/testing/index.js',
+    'dist/testing/index.d.ts',
   ];
   const missingFiles = requiredFiles.filter(filePath => !filePaths.includes(filePath));
 

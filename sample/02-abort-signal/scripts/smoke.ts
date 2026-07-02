@@ -9,9 +9,9 @@ import {
 } from '@nestjs/platform-fastify';
 import { AppModule } from '../src/app.module';
 import {
-  AbortableMockModel,
-  createAbortableMockModel,
-} from '../src/chat/mock-model';
+  createMockLanguageModel,
+  MockLanguageModel,
+} from '@nest-native/ai-sdk/testing';
 
 interface AdapterCase {
   readonly name: string;
@@ -49,7 +49,11 @@ async function smoke(): Promise<void> {
 async function runAdapter(adapter: AdapterCase): Promise<void> {
   // A fresh, slow, abort-recording model per adapter so the assertions never
   // observe state left behind by the other adapter's run.
-  const model = createAbortableMockModel('one two three four five six', 80);
+  const model = createMockLanguageModel({
+    text: 'one two three four five six',
+    chunkDelayInMs: 80,
+    respectAbortSignal: true,
+  });
   const app = await adapter.create(AppModule.withModel(model));
   await app.listen(0, '127.0.0.1');
 
@@ -79,7 +83,7 @@ async function assertBadRequest(
 async function assertDisconnectCancels(
   adapter: string,
   baseUrl: string,
-  model: AbortableMockModel,
+  model: MockLanguageModel,
 ): Promise<void> {
   const controller = new AbortController();
   const response = await fetch(`${baseUrl}/chat`, {

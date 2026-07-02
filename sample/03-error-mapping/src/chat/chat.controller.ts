@@ -1,4 +1,5 @@
 import { AiStream, AiStreamResult } from '@nest-native/ai-sdk';
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
 import {
   Body,
   Controller,
@@ -8,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { streamText } from 'ai';
 import { ChatRequest, chatRequestSchema } from './chat.schema';
-import { createFailingMockModel, createWorkingMockModel } from './mock-model';
 import { ApiKeyGuard } from '../common/api-key.guard';
 import { QuotaExceededError, QuotaExceededFilter } from '../common/quota.filter';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
@@ -55,7 +55,10 @@ export class ChatController {
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
   ): AiStreamResult {
     return streamText({
-      model: createFailingMockModel(body.prompt, new Error(SECRET_FAILURE)),
+      model: createMockLanguageModel({
+        text: body.prompt,
+        error: new Error(SECRET_FAILURE),
+      }),
       prompt: body.prompt,
     });
   }
@@ -69,7 +72,10 @@ export class ChatController {
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
   ): AiStreamResult {
     return streamText({
-      model: createFailingMockModel(body.prompt, new Error(SECRET_FAILURE)),
+      model: createMockLanguageModel({
+        text: body.prompt,
+        error: new Error(SECRET_FAILURE),
+      }),
       prompt: body.prompt,
     });
   }
@@ -81,7 +87,7 @@ export class ChatController {
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
   ): AiStreamResult {
     return streamText({
-      model: createWorkingMockModel('Hello from the model'),
+      model: createMockLanguageModel({ text: 'Hello from the model' }),
       prompt: body.prompt,
     });
   }

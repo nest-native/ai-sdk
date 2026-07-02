@@ -60,7 +60,7 @@ This package's headline differentiators:
 
 | Runtime | Supported line |
 | --- | --- |
-| Node.js | `>=20` |
+| Node.js | `>=22` (required by `ai@7`) |
 | NestJS | `11.x` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
@@ -163,12 +163,39 @@ AiModule.forRootAsync({
 Both registrations return a global `DynamicModule` by default. Pass
 `isGlobal: false` to scope it to a single module boundary.
 
+## Testing
+
+The `@nest-native/ai-sdk/testing` entrypoint ships the deterministic, offline
+mock language models every sample and e2e test in this repository streams from
+— no provider, no API keys:
+
+```ts
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
+import { streamText } from 'ai';
+
+const result = streamText({
+  model: createMockLanguageModel({ text: 'You said: ping' }),
+  prompt: 'ping',
+});
+```
+
+`createMockLanguageModel` streams `text` as AI SDK v4 protocol chunks (word
+deltas for a `string`, one delta per element for a `string[]`), fails
+mid-stream with the documented in-stream error frame when `error` is set, and
+— with `respectAbortSignal: true` and a `chunkDelayInMs` — honors `doStream`'s
+abort signal the way a real provider does, exposing `capturedSignal()` /
+`started()` / `settled()` observers so a test can prove a client disconnect
+cancelled the model call. `createToolCallingModel(toolName)` emits a single
+tool call so a tool `execute` closure runs. See the
+[testing documentation](https://nest-native.github.io/ai-sdk/docs/testing) for
+the full surface. The entrypoint adds no runtime dependencies.
+
 ## Quality Gates
 
 The repository ships the same review posture as its sibling `@nest-native`
 packages, using `node:test` and `c8`:
 
-- package build, typecheck, and coverage on Node.js 20 and 22
+- package build, typecheck, and coverage on Node.js 22 (the supported line)
 - coverage with `c8`, enforced at 100% for statements, branches, functions, and lines
 - sticky PR comments for coverage, test performance, and cognitive complexity
 - cognitive complexity enforcement with SonarJS threshold `15`
