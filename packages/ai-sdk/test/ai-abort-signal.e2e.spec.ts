@@ -15,7 +15,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { streamText } from 'ai';
-import { AbortableModel, createAbortableModel } from './fixtures/abortable-model';
+import { createMockLanguageModel, MockLanguageModel } from '../testing';
 import { AiAbortSignal } from '../decorators/ai-abort-signal.decorator';
 import { AiStream } from '../decorators/ai-stream.decorator';
 import { AiStreamInterceptor } from '../ai-stream.interceptor';
@@ -25,13 +25,13 @@ const MODEL = Symbol('ABORTABLE_MODEL');
 
 @Controller('chat')
 class ChatController {
-  constructor(@Inject(MODEL) private readonly abortable: AbortableModel) {}
+  constructor(@Inject(MODEL) private readonly model: MockLanguageModel) {}
 
   @Post()
   @AiStream()
   chat(@AiAbortSignal() signal: AbortSignal) {
     return streamText({
-      model: this.abortable.model,
+      model: this.model,
       prompt: 'hi',
       abortSignal: signal,
     });
@@ -40,13 +40,13 @@ class ChatController {
 
 @Module({})
 class ChatModule {
-  static withModel(abortable: AbortableModel): DynamicModule {
+  static withModel(model: MockLanguageModel): DynamicModule {
     return {
       module: ChatModule,
       imports: [AiModule.forRoot()],
       controllers: [ChatController],
       providers: [
-        { provide: MODEL, useValue: abortable },
+        { provide: MODEL, useValue: model },
         { provide: APP_INTERCEPTOR, useClass: AiStreamInterceptor },
       ],
     };
@@ -78,12 +78,16 @@ for (const adapter of adapters) {
   describe(`@AiAbortSignal disconnect on ${adapter.name}`, () => {
     let app: INestApplication;
     let baseUrl: string;
-    let abortable: AbortableModel;
+    let abortable: MockLanguageModel;
 
     before(async () => {
       // A fresh, slow, abort-recording model per adapter so the assertions
       // never observe state left behind by the other adapter's run.
-      abortable = createAbortableModel('one two three four five six', 80);
+      abortable = createMockLanguageModel({
+        text: 'one two three four five six',
+        chunkDelayInMs: 80,
+        respectAbortSignal: true,
+      });
       app = await adapter.create(ChatModule.withModel(abortable));
       await app.listen(0, '127.0.0.1');
       baseUrl = await app.getUrl();

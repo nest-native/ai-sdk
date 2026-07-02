@@ -1,4 +1,5 @@
 import { AiStream } from '@nest-native/ai-sdk';
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { streamObject } from 'ai';
 import {
@@ -7,7 +8,6 @@ import {
   recipeRequestSchema,
   recipeSchema,
 } from './recipe.schema';
-import { createRecipeMockModel } from './mock-model';
 import { ApiKeyGuard } from '../common/api-key.guard';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
 
@@ -43,9 +43,28 @@ export class ChatController {
     @Body(new ZodValidationPipe(recipeRequestSchema)) body: RecipeRequest,
   ) {
     return streamObject({
-      model: createRecipeMockModel(buildRecipe(body.dish)),
+      model: createMockLanguageModel({
+        text: recipeJsonDeltas(buildRecipe(body.dish)),
+      }),
       schema: recipeSchema,
       prompt: `Write a recipe for ${body.dish}.`,
     });
   }
+}
+
+/**
+ * Serialize the recipe and slice the JSON into fixed-size text deltas —
+ * exactly what a real provider streams for a structured response. The explicit
+ * `string[]` form of `createMockLanguageModel`'s `text` option emits one delta
+ * per slice, so the client sees the object arrive progressively.
+ */
+function recipeJsonDeltas(recipe: Recipe): string[] {
+  const json = JSON.stringify(recipe);
+  const deltas: string[] = [];
+
+  for (let index = 0; index < json.length; index += 12) {
+    deltas.push(json.slice(index, index + 12));
+  }
+
+  return deltas;
 }

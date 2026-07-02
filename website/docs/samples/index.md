@@ -3,8 +3,8 @@
 The repository ships runnable samples that each isolate one part of the
 integration. They live under
 [`sample/`](https://github.com/nest-native/ai-sdk/tree/main/sample) and never
-call a real model provider — every sample uses a mock model, so no API keys are
-needed.
+call a real model provider — every sample streams from the mock models in
+[`@nest-native/ai-sdk/testing`](../testing.md), so no API keys are needed.
 
 Each sample is a workspace with a `typecheck` step and a `smoke` test. The smoke
 tests boot the app, exercise the route, and assert the streamed payloads,

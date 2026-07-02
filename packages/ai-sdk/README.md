@@ -40,9 +40,9 @@ SDK call.
 
 | Runtime | Supported line |
 | --- | --- |
-| Node.js | `>=20` |
+| Node.js | `>=22` (required by `ai@7`) |
 | NestJS | `11.x` |
-| Vercel AI SDK (`ai`) | `^5` (pin major; pre-v5 not supported) |
+| Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity shipped and tested) |
 
 The published package has no runtime dependencies. The Vercel AI SDK and the
@@ -265,6 +265,33 @@ to vetted, non-sensitive messages.**
 
 See [`sample/03-error-mapping`](../../sample/03-error-mapping/README.md) for both
 paths exercised on Express and Fastify.
+
+## Testing
+
+The `@nest-native/ai-sdk/testing` entrypoint ships deterministic, fully offline
+AI SDK v4 mock language models — no provider, no API keys — so streaming
+handlers can be exercised end-to-end in tests:
+
+```ts
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
+import { streamText } from 'ai';
+
+const result = streamText({
+  model: createMockLanguageModel({ text: 'You said: ping' }),
+  prompt: 'ping',
+});
+```
+
+`createMockLanguageModel` streams `text` as v4 protocol chunks (word deltas for
+a `string`, one delta per element for a `string[]`), fails mid-stream with the
+documented in-stream error frame when `error` is set, and — with
+`respectAbortSignal: true` and a `chunkDelayInMs` — honors `doStream`'s abort
+signal the way a real provider does, exposing `capturedSignal()` / `started()`
+/ `settled()` observers so a test can prove a client disconnect cancelled the
+model call. `createToolCallingModel(toolName)` emits a single tool call so a
+tool `execute` closure runs. The entrypoint adds no runtime dependencies
+(`"dependencies": {}` stays). Full reference:
+[testing documentation](https://nest-native.github.io/ai-sdk/docs/testing).
 
 ## Migrating from the official cookbook
 

@@ -14,7 +14,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { jsonSchema, streamText, tool } from 'ai';
-import { createToolCallingModel } from './fixtures/tool-calling-model';
+import { createToolCallingModel } from '../testing';
 import { AiContext } from '../decorators/ai-context.decorator';
 import { AiStream } from '../decorators/ai-stream.decorator';
 import { AiStreamInterceptor } from '../ai-stream.interceptor';

@@ -1,4 +1,5 @@
 import { AiStream, AiStreamResult } from '@nest-native/ai-sdk';
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import {
   convertToModelMessages,
@@ -7,7 +8,6 @@ import {
 } from 'ai';
 import { ApiKeyGuard } from '../common/api-key.guard';
 import { ChatRequest, chatRequestSchema } from './chat.schema';
-import { createMockModel } from './mock-model';
 import { toUiMessageStreamResult } from './ui-stream-result';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
 
@@ -42,7 +42,7 @@ export class MigratedChatController {
     const prompt = lastUserText(body);
 
     return streamText({
-      model: createMockModel(`You said: ${prompt}`),
+      model: createMockLanguageModel({ text: `You said: ${prompt}` }),
       messages: await convertToModelMessages(body.messages as never),
     });
   }
@@ -61,7 +61,7 @@ export class MigratedChatController {
         });
 
         const result = streamText({
-          model: createMockModel(`You said: ${prompt}`),
+          model: createMockLanguageModel({ text: `You said: ${prompt}` }),
           messages: await convertToModelMessages(body.messages as never),
         });
         writer.merge(
@@ -86,7 +86,7 @@ export class MigratedChatController {
     const prompt = lastUserText(body);
 
     return streamText({
-      model: createMockModel(`Echo: ${prompt}`),
+      model: createMockLanguageModel({ text: `Echo: ${prompt}` }),
       messages: await convertToModelMessages(body.messages as never),
     });
   }

@@ -2,7 +2,8 @@
 
 Every sample is a self-contained workspace under
 [`sample/`](https://github.com/nest-native/ai-sdk/tree/main/sample). None call a
-real model provider — all use a mock model, so no API keys are needed.
+real model provider — all use the mock models from
+[`@nest-native/ai-sdk/testing`](../testing.md), so no API keys are needed.
 
 | Sample | AI SDK call | What it proves |
 | :--- | :--- | :--- |

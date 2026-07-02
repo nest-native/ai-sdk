@@ -22,7 +22,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { streamText } from 'ai';
-import { createMockLanguageModel } from './fixtures/mock-model';
+import { createMockLanguageModel } from '../testing';
 import { AiStream } from '../decorators/ai-stream.decorator';
 import { AiStreamInterceptor } from '../ai-stream.interceptor';
 import { AiModule } from '../ai.module';
@@ -65,7 +65,7 @@ class ChatController {
   @AiStream({ format: 'text' })
   text() {
     return streamText({
-      model: createMockLanguageModel('Hello world'),
+      model: createMockLanguageModel({ text: 'Hello world' }),
       prompt: 'hi',
     });
   }
@@ -74,7 +74,7 @@ class ChatController {
   @AiStream()
   ui() {
     return streamText({
-      model: createMockLanguageModel('Hello world'),
+      model: createMockLanguageModel({ text: 'Hello world' }),
       prompt: 'hi',
     });
   }

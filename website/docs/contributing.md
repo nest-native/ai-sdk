@@ -18,7 +18,7 @@ Every PR must keep the gates green:
 
 - **100% coverage** on the package source — every new branch needs a test.
 - **Cognitive complexity ≤ 15** per source function (SonarJS).
-- Build and tests pass on Node.js 20 and 22.
+- Build and tests pass on Node.js 22.
 - `"dependencies": {}` stays empty in `packages/ai-sdk/package.json` — runtime
   libraries are peers, build/test tools are devDependencies.
 

@@ -1,4 +1,5 @@
 import { AiStream, AiStreamResult } from '@nest-native/ai-sdk';
+import { createMockLanguageModel } from '@nest-native/ai-sdk/testing';
 import {
   Body,
   Controller,
@@ -10,7 +11,6 @@ import { streamText } from 'ai';
 import { ApiKeyGuard } from '../common/api-key.guard';
 import { QuotaExceededError, QuotaExceededFilter } from '../common/quota.filter';
 import { ZodValidationPipe } from '../common/zod-validation.pipe';
-import { createMockModel } from './mock-model';
 import { ChatRequest, chatRequestSchema } from './chat.schema';
 
 /**
@@ -37,7 +37,7 @@ export class ChatController {
     this.consumeQuota();
 
     return streamText({
-      model: createMockModel(`You said: ${body.prompt}`),
+      model: createMockLanguageModel({ text: `You said: ${body.prompt}` }),
       prompt: body.prompt,
     });
   }
@@ -51,7 +51,7 @@ export class ChatController {
     @Body(new ZodValidationPipe(chatRequestSchema)) body: ChatRequest,
   ): AiStreamResult {
     return streamText({
-      model: createMockModel(`Echo: ${body.prompt}`),
+      model: createMockLanguageModel({ text: `Echo: ${body.prompt}` }),
       prompt: body.prompt,
     });
   }
