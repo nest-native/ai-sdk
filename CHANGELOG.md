@@ -8,6 +8,12 @@ package release is useful for users.
 
 ## Unreleased
 
+- Stryker mutation testing (repo tooling; nothing ships in the package):
+  `npm run test:mutation` (incremental) / `npm run test:mutation:full`, with
+  `STRYKER_MUTATE` scoping (comma-separated globs). Opt-in and local-only —
+  CI is unchanged. See the new "Mutation testing" section in
+  GUIDELINES_NEST_AI_SDK.md.
+
 ## 0.5.0 - 2026-07-01
 
 Ships a public testing entrypoint and aligns the supported Node.js line with
