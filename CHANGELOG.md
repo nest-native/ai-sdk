@@ -8,6 +8,12 @@ package release is useful for users.
 
 ## Unreleased
 
+- Internal: removed the redundant `finished` flag from the abort-signal's
+  disconnect binding. `onFinish` already detaches the `close` listener, so
+  `onClose` runs only on a real mid-stream disconnect and aborts
+  unconditionally — the flag/guard was an equivalent-mutant branch that
+  mutation testing flagged. Behavior-neutral; the abort-signal suite (disconnect
+  aborts, normal finish does not, listeners detach) stays green at 100% coverage.
 - Stryker mutation testing (repo tooling; nothing ships in the package):
   `npm run test:mutation` (incremental) / `npm run test:mutation:full`, with
   `STRYKER_MUTATE` scoping (comma-separated globs). Opt-in and local-only —

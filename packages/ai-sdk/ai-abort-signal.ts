@@ -58,31 +58,28 @@ export function resolveRequestAbortSignal(
 /**
  * Abort the controller when the response closes before it finishes flushing.
  *
- * `finish` marks a fully-sent response, so seeing it first means the stream
- * completed normally and there is nothing to cancel. Seeing `close` first means
- * the client tore the connection down mid-stream — that is the disconnect we
- * propagate. Either event detaches both listeners so nothing leaks.
+ * `finish` marks a fully-sent response: its listener detaches BOTH handlers, so
+ * the `close` that Node emits after a normal finish never reaches `onClose`.
+ * `onClose` therefore runs only when the client tore the connection down
+ * mid-stream — the disconnect we propagate — so it can abort unconditionally.
+ * (A `finished` flag guarding the abort would be dead weight: the detach already
+ * makes `onClose` unreachable once finished, an equivalence mutation testing
+ * confirms.) Either event detaches both listeners so nothing leaks.
  */
 function bindDisconnect(
   response: ServerResponse,
   controller: AbortController,
 ): void {
-  let finished = false;
-
   const detach = () => {
     response.removeListener('finish', onFinish);
     response.removeListener('close', onClose);
   };
   const onFinish = () => {
-    finished = true;
     detach();
   };
   const onClose = () => {
     detach();
-
-    if (!finished) {
-      controller.abort();
-    }
+    controller.abort();
   };
 
   response.once('finish', onFinish);
