@@ -42,7 +42,7 @@
     "enabled": false
   },
   "devDependencies": {
-    "@ai-sdk/provider": "^4.0.4",
+    "@ai-sdk/provider": "^4.0.6",
     "@nestjs/common": "^11.1.28",
     "@nestjs/core": "^11.1.28",
     "@nestjs/platform-express": "^11.1.28",
@@ -51,7 +51,7 @@
     "@stryker-mutator/core": "^9.6.1",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.2",
-    "@typescript-eslint/parser": "^8.65.0",
+    "@typescript-eslint/parser": "^8.66.0",
     "ai": "^7",
     "c8": "^12.0.0",
     "eslint": "^10.8.0",
