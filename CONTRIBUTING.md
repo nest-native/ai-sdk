@@ -62,7 +62,8 @@ npm run ci
 ```
 
 This runs typecheck, coverage (enforced at 100%), cognitive complexity checks,
-release checks (README links and package tarball), and the supply-chain audit.
+release checks (README links, README version literals, sample version sync, and
+the package tarball), and the supply-chain audit.
 
 ## Library-Fix PR Checklist
 
