@@ -8,7 +8,7 @@
 </p>
 
 > [!NOTE]
-> **Status: `0.2.0` (`0.x`).** Functional and fully tested (100% coverage), and
+> **Status: `0.5.0` (`0.x`).** Functional and fully tested (100% coverage), and
 > usable today — but the public API may still change before `1.0`, so pin a
 > version (per semver, `0.x` minor releases can include breaking changes). See the
 > [support policy](https://nest-native.github.io/ai-sdk/docs/support-policy).

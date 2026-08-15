@@ -4,13 +4,15 @@ Thanks for helping improve `@nest-native/ai-sdk`.
 
 ## Project Status
 
-The initial `0.x` release covers the surface below, released as `0.2.0` (the
-public API may still change before `1.0`). `@AiStream` streams AI SDK
+**Status: `0.5.0` (`0.x`).** The `0.x` line covers the surface below (the public
+API may still change before `1.0`). `@AiStream` streams AI SDK
 results on both Express and Fastify while preserving the full Nest enhancer
 pipeline; `@AiAbortSignal` cancels the AI SDK call when the client disconnects
 mid-stream; `@AiContext` injects request-scoped context (`{ request, response,
 signal }`) for AI SDK tool `execute` closures; pre-stream vs in-stream errors
-are mapped correctly; and the sample catalog covers `streamText`, `streamObject`,
+are mapped correctly; the `@nest-native/ai-sdk/testing` entrypoint ships the
+deterministic offline mock language models every sample and e2e test streams
+from; and the sample catalog covers `streamText`, `streamObject`,
 the v5 generative-UI equivalent of `streamUI`, and request-scoped tool context.
 The workspace builds, typechecks, tests at 100% coverage, and is CI-green.
 Contributions now focus on keeping that surface correct across NestJS minors and
