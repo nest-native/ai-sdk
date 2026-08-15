@@ -185,6 +185,25 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 - Regenerate `package-lock.json`. Run `npm run release:check`. Run
   `npm run ci`.
 - Post-publish: re-run full CI with samples pinned to the published version.
+- **Documentation version literals are release-blocking too.** The **Status**
+  line in the root and package READMEs, version badges, the version claims in
+  `CONTRIBUTING.md`, and the compatibility tables must state the shipped version
+  and the declared `engines`/peer ranges. Version drift in prose is the same
+  defect as version drift in a manifest — it is what users actually read — and
+  `release:check:readme-version` (`scripts/check-readme-version.mjs`) enforces
+  it: the Status marker is the one canonical way these docs state their version,
+  so keep stating it that way instead of scattering loose version numbers.
+- **Prefer dynamic badges over hardcoded ones.** A version badge must be the
+  npm shield (`https://img.shields.io/npm/v/<package>.svg`), which can never go
+  stale; hardcoded `img.shields.io/badge/version-…` / `…/badge/status-…`
+  literals are rejected by the check. (A badge that states a non-versioned fact,
+  such as the license or the coverage bar, may stay hardcoded.)
+- **Version-sync checks iterate; they do not hardcode a package name.** A check
+  walks every non-private `packages/*/package.json` and derives names and
+  versions from those manifests, so it keeps working if the workspace ever ships
+  a second package. (`check-sample-version-sync.mjs` predates this rule and
+  still hardcodes the single package name — convert it the next time it is
+  touched.)
 
 ### 11. Cognitive Complexity Review
 
