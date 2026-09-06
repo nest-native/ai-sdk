@@ -4,7 +4,7 @@ Thanks for helping improve `@nest-native/ai-sdk`.
 
 ## Project Status
 
-**Status: `0.5.0` (`0.x`).** The `0.x` line covers the surface below (the public
+**Status: `0.6.0` (`0.x`).** The `0.x` line covers the surface below (the public
 API may still change before `1.0`). `@AiStream` streams AI SDK
 results on both Express and Fastify while preserving the full Nest enhancer
 pipeline; `@AiAbortSignal` cancels the AI SDK call when the client disconnects

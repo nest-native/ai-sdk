@@ -8,6 +8,8 @@ package release is useful for users.
 
 ## Unreleased
 
+## 0.6.0
+
 - **NestJS 12 support.** The `@nestjs/common`, `@nestjs/core`,
   `@nestjs/platform-express`, and `@nestjs/platform-fastify` peer ranges widen
   from `^11.0.0` to `^11.0.0 || ^12.0.0`. Nothing in the package needed to
