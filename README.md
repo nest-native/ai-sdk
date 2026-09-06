@@ -59,7 +59,7 @@ This package's headline differentiators:
 
 | Runtime | Supported line |
 | --- | --- |
-| Node.js | `>=22` (required by `ai@7`) |
+| Node.js | `>=22` (required by `ai@7`; `>=22.12` with NestJS 12 — see the note below the table) |
 | NestJS (`@nestjs/common`, `@nestjs/core` peers) | `^11.0.0 \|\| ^12.0.0` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
@@ -74,9 +74,16 @@ default install tests 11 (the devDependencies and the lockfile stay on 11 on
 purpose), and the `nestjs-latest-major` leg installs `@nestjs/*@12` with
 `--no-save`, proves every workspace — the package and all eight samples —
 resolves the 12 major, and runs the suite and the full sample matrix against
-it. NestJS 12 ships ESM-only, so a CommonJS application (the samples here run
-`ts-node` in CommonJS mode) needs a Node.js with unflagged `require(esm)`:
-`>=22.12` within this package's `>=22` line.
+it.
+
+The Node.js floor depends on which end of that range you are on. NestJS 11 runs
+on any Node.js `>=22`. NestJS 12 ships ESM-only, and a CommonJS application
+(the samples here run `ts-node` in CommonJS mode) loads it through Node's
+`require(esm)`, which is behind a flag before Node.js 22.12.0 — so the 12 end
+of the range needs Node.js `>=22.12`. `engines` stays `>=22` because the 11
+end does not need more, and the `@nestjs/*@12` packages' own `engines` field
+(`>= 20`) does not encode that floor, so npm will not warn you: run NestJS 12
+on a current Node 22 or 24.
 
 ## Repository Layout
 

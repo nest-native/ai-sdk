@@ -6,7 +6,7 @@ The supported runtime and peer lines for `@nest-native/ai-sdk`.
 
 | Item | Supported line |
 | :--- | :--- |
-| Node.js | `>=22` (required by `ai@7`) |
+| Node.js | `>=22` (required by `ai@7`; `>=22.12` with NestJS 12 — see the note below the table) |
 | NestJS (`@nestjs/common`, `@nestjs/core` peers) | `^11.0.0 \|\| ^12.0.0` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
@@ -19,6 +19,15 @@ ecosystems they actually use.
 The Node.js line follows the AI SDK's own requirement: `ai@7` and the
 `@ai-sdk/*` v4-spec packages declare `engines.node: '>=22'`, so this package
 does too rather than overstating support the peer stack cannot deliver.
+
+The floor then depends on which end of the NestJS range you are on. NestJS 11
+runs on any Node.js `>=22`. NestJS 12 is ESM-only, and a CommonJS application
+loads it through Node's `require(esm)`, which is behind a flag before Node.js
+22.12.0 — so the 12 end of the range needs Node.js `>=22.12`. `engines` stays
+`>=22` because the 11 end does not need more, and the `@nestjs/*@12` packages'
+own `engines` field (`>= 20`) does not encode that floor, so npm never warns
+about it: run NestJS 12 on a current Node 22 or 24. CI's `nestjs-latest-major`
+leg runs on a current 22.x.
 
 ## NestJS Major Version
 
@@ -36,8 +45,8 @@ Two NestJS 12 changes are worth knowing when you upgrade:
   `exports` map that resolves file paths (`./*` → `./*.js`) but no directory
   indexes. The package source imports only the `@nestjs/common` and
   `@nestjs/core` roots, so it is unaffected; a CommonJS application (the samples
-  here run `ts-node` in CommonJS mode) needs a Node.js with unflagged
-  `require(esm)` — `>=22.12` within this package's `>=22` line.
+  here run `ts-node` in CommonJS mode) loads it through `require(esm)`, which
+  is why the 12 end needs Node.js `>=22.12` (see the Node.js note above).
 - **Lifecycle hooks run in a different order.** NestJS 12 calls
   `onModuleInit`, `onApplicationBootstrap`, and the shutdown hooks by component
   hierarchy level, which can change their execution order when providers or

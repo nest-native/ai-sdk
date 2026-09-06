@@ -17,7 +17,11 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   explicitly avoiding `@Sse`'s known bugs (`nestjs/nest#12670`: connection
   opens before the handler runs).
 - Current stabilization support line:
-  - Node.js `>=22` (required by `ai@7`)
+  - Node.js `>=22` (required by `ai@7`; `>=22.12` on the NestJS 12 end: 12 is
+    ESM-only and `require(esm)` is behind a flag before 22.12.0; `engines`
+    stays `>=22` for the 11 end; the `@nestjs/*@12` `engines` field — `>= 20`
+    — does not encode the 12 floor, so every compatibility table states it
+    per end)
   - NestJS `^11.0.0 || ^12.0.0` — the published peer range. The
     devDependencies and the lockfile stay on 11 and a dedicated CI leg tests
     12 (see §12)
