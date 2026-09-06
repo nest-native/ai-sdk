@@ -8,6 +8,23 @@ package release is useful for users.
 
 ## Unreleased
 
+- **NestJS 12 support.** The `@nestjs/common`, `@nestjs/core`,
+  `@nestjs/platform-express`, and `@nestjs/platform-fastify` peer ranges widen
+  from `^11.0.0` to `^11.0.0 || ^12.0.0`. Nothing in the package needed to
+  change: the suite (96/96) and the full sample matrix already pass against
+  `@nestjs/*@12` — the only blocker was the package's own peer range refusing
+  the install. The devDependencies and the lockfile stay on 11 so the default
+  suite keeps testing that end; a new `nestjs-latest-major` CI leg installs 12
+  on top with `--no-save`, proves every workspace resolves the 12 major
+  (`scripts/check-resolved-nestjs-major.mjs`), and runs the suite and the
+  sample matrix against it, so both ends of the range are tested claims.
+  Adopter notes: the 12 end of the range needs Node.js `>=22.12`, where
+  `require(esm)` is no longer behind a flag (12 is ESM-only and a CommonJS
+  application loads it through it); `engines` stays `>=22` because the 11 end
+  does not need more, and the `@nestjs/*@12` packages' own `engines` (`>= 20`)
+  do not encode that floor, so every compatibility table now states it per
+  end. 12 also calls lifecycle hooks by component hierarchy level — the package
+  implements no hook and depends on no cross-provider hook order.
 - Internal: removed the redundant `finished` flag from the abort-signal's
   disconnect binding. `onFinish` already detaches the `close` listener, so
   `onClose` runs only on a real mid-stream disconnect and aborts

@@ -6,6 +6,11 @@ packages, using `node:test` and `c8`.
 ## Gates
 
 - Package build, typecheck, and tests on Node.js **22** (the supported line).
+- NestJS 12 compatibility leg — `@nestjs/*@12` installed with `--no-save` on top
+  of the 11 lockfile, a check that every workspace resolves the 12 major
+  (`scripts/check-resolved-nestjs-major.mjs`), then the suite and the full
+  sample matrix against it. Both ends of the `^11.0.0 || ^12.0.0` peer range are
+  tested claims.
 - Coverage with `c8`, enforced at **100%** for statements, branches, functions,
   and lines on the package source.
 - Cognitive complexity enforced with SonarJS at a threshold of **15** per source

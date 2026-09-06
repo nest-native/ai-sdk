@@ -17,8 +17,14 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   explicitly avoiding `@Sse`'s known bugs (`nestjs/nest#12670`: connection
   opens before the handler runs).
 - Current stabilization support line:
-  - Node.js `>=22` (required by `ai@7`)
-  - NestJS `11.x`
+  - Node.js `>=22` (required by `ai@7`; `>=22.12` on the NestJS 12 end: 12 is
+    ESM-only and `require(esm)` is behind a flag before 22.12.0; `engines`
+    stays `>=22` for the 11 end; the `@nestjs/*@12` `engines` field — `>= 20`
+    — does not encode the 12 floor, so every compatibility table states it
+    per end)
+  - NestJS `^11.0.0 || ^12.0.0` — the published peer range. The
+    devDependencies and the lockfile stay on 11 and a dedicated CI leg tests
+    12 (see §12)
   - `ai` (Vercel AI SDK) `^7` — track the current major; adopt new majors
     rather than pinning to an old one. Older majors are not supported; a
     major bump is a deliberate breaking peer change (see §10).
@@ -216,9 +222,42 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 
 ### 12. Accumulated Project Decisions
 
-(Empty at v0; grows as the project lands decisions worth preserving. Append
-entries here when an architectural call repeats or is non-obvious. Each
-entry should be one short paragraph with rationale.)
+Append entries here when an architectural call repeats or is non-obvious. Each
+entry is one short paragraph with rationale.
+
+- **A peer major is widened, not moved (NestJS 12, 2026-09).** When a peer
+  ships a new major, widen the published `peerDependencies` range
+  (`^11.0.0` → `^11.0.0 || ^12.0.0`), keep the `devDependencies` and the
+  lockfile on the older major so the default suite keeps testing that end, and
+  add a dedicated CI leg (`nestjs-latest-major`) that installs the newer major
+  with `--no-save` and runs the suite and the sample matrix against it — so
+  both ends of the range are tested claims. Three details are load-bearing:
+  install with `--workspaces --include-workspace-root` (with `--workspace-root`
+  alone the samples' exact pins win: npm either refuses the tree with ERESOLVE
+  or only warns and leaves the samples resolving the old major, and the
+  sample matrix never runs on the new one); prove the resolution with
+  `node scripts/check-resolved-nestjs-major.mjs <major>` rather than trusting
+  the root's version print; and never `--legacy-peer-deps` an ERESOLVE away —
+  a refused tree is the finding. Dependabot groups `@nestjs/*` majors for the
+  same reason: the packages peer on each other, so a major that arrives
+  one-package-per-PR cannot even be installed.
+- **NestJS 12 is ESM-only — never import a directory index from `@nestjs/*`.**
+  The 12 `exports` map resolves file paths (`./*` → `./*.js`) but no directory
+  indexes, so `@nestjs/common/interfaces` no longer resolves while
+  `@nestjs/common/constants` (a file; the decorator spec imports it) still
+  does. Import from the package roots; a deep *file* path is tolerated only
+  when no root export exists. The `nestjs-latest-major` leg runs the suite and
+  the samples against the real 12 exports map, so a directory import cannot
+  land green. (`@nest-native/kafka` and `@nest-native/trpc`, which had such an
+  import, carry a test that scans every `@nestjs/<pkg>/<subpath>` import and
+  asserts it resolves to a file.)
+- **Nothing may assume a cross-provider lifecycle order.** NestJS 12 calls
+  lifecycle hooks (`onModuleInit`, `onApplicationBootstrap`, the shutdown
+  hooks) by component hierarchy level, which changes their execution order
+  when providers or modules depend on one another. The package
+  implements no lifecycle hook today; if it ever does, it must not rely on
+  another provider's hook having run first, and no test may assert a hook
+  order.
 
 ### 13. Mutation testing (Stryker — occasional targeted audit, local only, never in CI)
 

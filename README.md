@@ -59,8 +59,8 @@ This package's headline differentiators:
 
 | Runtime | Supported line |
 | --- | --- |
-| Node.js | `>=22` (required by `ai@7`) |
-| NestJS | `11.x` |
+| Node.js | `>=22` (required by `ai@7`; `>=22.12` with NestJS 12 — see the note below the table) |
+| NestJS (`@nestjs/common`, `@nestjs/core` peers) | `^11.0.0 \|\| ^12.0.0` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
 | Validation | Zod and class-validator, both app-owned |
@@ -68,6 +68,22 @@ This package's headline differentiators:
 The published package keeps `"dependencies": {}`. The Vercel AI SDK and the
 NestJS packages are declared as `peerDependencies`, so applications install only
 the ecosystems they actually use.
+
+Both NestJS majors in that range are exercised in CI, not just declared: the
+default install tests 11 (the devDependencies and the lockfile stay on 11 on
+purpose), and the `nestjs-latest-major` leg installs `@nestjs/*@12` with
+`--no-save`, proves every workspace — the package and all eight samples —
+resolves the 12 major, and runs the suite and the full sample matrix against
+it.
+
+The Node.js floor depends on which end of that range you are on. NestJS 11 runs
+on any Node.js `>=22`. NestJS 12 ships ESM-only, and a CommonJS application
+(the samples here run `ts-node` in CommonJS mode) loads it through Node's
+`require(esm)`, which is behind a flag before Node.js 22.12.0 — so the 12 end
+of the range needs Node.js `>=22.12`. `engines` stays `>=22` because the 11
+end does not need more, and the `@nestjs/*@12` packages' own `engines` field
+(`>= 20`) does not encode that floor, so npm will not warn you: run NestJS 12
+on a current Node 22 or 24.
 
 ## Repository Layout
 
@@ -195,6 +211,10 @@ The repository ships the same review posture as its sibling `@nest-native`
 packages, using `node:test` and `c8`:
 
 - package build, typecheck, and coverage on Node.js 22 (the supported line)
+- NestJS 12 compatibility leg (`nestjs-latest-major`): installs `@nestjs/*@12`
+  with `--no-save` on top of the 11 lockfile, fails unless every workspace
+  resolves the 12 major (`scripts/check-resolved-nestjs-major.mjs`), then runs
+  the suite and the full sample matrix against it
 - coverage with `c8`, enforced at 100% for statements, branches, functions, and lines
 - sticky PR comments for coverage, test performance, and cognitive complexity
 - cognitive complexity enforcement with SonarJS threshold `15`
