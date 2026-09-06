@@ -254,6 +254,53 @@ jobs:
           EOF
           sed -i "s/DURATION_PLACEHOLDER/${DURATION_SECONDS}s (${DURATION_MS}ms)/" "$GITHUB_STEP_SUMMARY"
 
+  nestjs-latest-major:
+    name: NestJS 12 compatibility (Node 22)
+    runs-on: ubuntu-latest
+    # The published peer range allows @nestjs/common, @nestjs/core and the two
+    # optional platform adapters at ^11 || ^12, but the devDependencies and the
+    # lockfile stay on 11 so the default suite keeps testing that end. This leg
+    # installs the 12 set on top with --no-save and is what makes the 12 end a
+    # tested claim. Two details are load-bearing:
+    #   - `--workspaces --include-workspace-root`, not `--workspace-root`: the
+    #     samples pin @nestjs/* exactly, so with the latter those 11.x pins
+    #     win — npm either refuses the tree with ERESOLVE or only warns
+    #     (`ERESOLVE overriding peer dependency`) and leaves the samples
+    #     resolving 11, and the sample matrix never runs on 12. The check
+    #     script below fails the leg if the samples ever resolve anything
+    #     but 12.
+    #   - the version print reads the manifest by path: the 12 exports map
+    #     routes `./*` to `./*.js`, so `require('@nestjs/core/package.json')`
+    #     throws on 12.
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install with NestJS 12
+        run: |
+          npm install --no-save --workspaces --include-workspace-root \
+            @nestjs/common@^12.0.0 @nestjs/core@^12.0.0 \
+            @nestjs/platform-express@^12.0.0 @nestjs/platform-fastify@^12.0.0 \
+            @nestjs/testing@^12.0.0
+          node -e "console.log('@nestjs/core', require('./node_modules/@nestjs/core/package.json').version)"
+
+      - name: Prove every workspace resolves NestJS 12
+        run: node scripts/check-resolved-nestjs-major.mjs 12
+
+      - name: Run the suite against NestJS 12
+        run: npm test
+
+      - name: Build package
+        run: npm run build --workspace @nest-native/ai-sdk
+
+      - name: Run sample matrix against NestJS 12
+        run: npm run ci:sample
+
   docs-site:
     name: Docusaurus build
     runs-on: ubuntu-latest
