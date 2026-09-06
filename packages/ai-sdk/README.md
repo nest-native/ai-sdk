@@ -41,13 +41,19 @@ SDK call.
 | Runtime | Supported line |
 | --- | --- |
 | Node.js | `>=22` (required by `ai@7`) |
-| NestJS | `11.x` |
+| NestJS (`@nestjs/common`, `@nestjs/core` peers) | `^11.0.0 \|\| ^12.0.0` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity shipped and tested) |
 
 The published package has no runtime dependencies. The Vercel AI SDK and the
 NestJS packages are declared as `peerDependencies`, so applications install only
 the ecosystems they actually use.
+
+Both NestJS majors in that range are tested in CI: the default install runs on
+11, and a dedicated leg installs `@nestjs/*@12`, proves every workspace resolves
+it, and runs the suite and the sample matrix against it. NestJS 12 ships
+ESM-only, so a CommonJS application needs a Node.js with unflagged
+`require(esm)`: `>=22.12` within this package's `>=22` line.
 
 ## Installation
 

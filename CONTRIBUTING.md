@@ -15,8 +15,8 @@ deterministic offline mock language models every sample and e2e test streams
 from; and the sample catalog covers `streamText`, `streamObject`,
 the v5 generative-UI equivalent of `streamUI`, and request-scoped tool context.
 The workspace builds, typechecks, tests at 100% coverage, and is CI-green.
-Contributions now focus on keeping that surface correct across NestJS minors and
-AI SDK majors.
+Contributions now focus on keeping that surface correct across the NestJS majors
+in the peer range (`^11.0.0 || ^12.0.0`, both tested in CI) and AI SDK majors.
 
 ## Sample Work Must Stay Separate From Library Fixes
 

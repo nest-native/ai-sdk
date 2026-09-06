@@ -133,7 +133,7 @@ function checkCompatibilityTable(relativePath, contents, entry) {
   const rows = contents
     .split('\n')
     .filter(line => line.trimStart().startsWith('|'))
-    .map(line => line.split('|').map(cell => cell.trim()))
+    .map(splitTableRow)
     .filter(cells => cells.length >= 4);
 
   for (const cells of rows) {
@@ -155,6 +155,14 @@ function checkCompatibilityTable(relativePath, contents, entry) {
   }
 
   return tableFailures;
+}
+
+// GFM writes a literal pipe inside a cell as `\|`, which is how a peer range
+// such as `^11.0.0 || ^12.0.0` appears in a table. Split on the unescaped pipes
+// only and restore the literal ones, so the cell compares against the
+// manifest's range verbatim.
+function splitTableRow(line) {
+  return line.split(/(?<!\\)\|/).map(cell => cell.replaceAll('\\|', '|').trim());
 }
 
 function readJson(relativePath) {
