@@ -8,6 +8,21 @@ package release is useful for users.
 
 ## Unreleased
 
+### Changed
+
+- **Both ends of the NestJS peer range are now CI legs.** The single
+  `nestjs-latest-major` job that installed `^12` is replaced by a
+  `nestjs-compat` matrix: an `11 floor` leg pinned exactly to `11.0.0` with
+  `@nestjs/platform-fastify@11.0.2` (the first fastify release whose peers
+  admit 11; the reason is next to the pin) and a `12` leg on `^12.0.0`. Each
+  leg greps its install log for `ERESOLVE` (npm overrides a peer conflict it
+  can override with a warning and exit 0) and runs
+  `scripts/check-nestjs-resolution.mjs` (replacing
+  `check-resolved-nestjs-major.mjs`), which proves the exact version from
+  inside every workspace and re-checks every `@nestjs/*` peer range in the
+  tree. The same script runs against the lockfile in `release:check`. No
+  published range changed.
+
 ## 0.6.0
 
 - **NestJS 12 support.** The `@nestjs/common`, `@nestjs/core`,
