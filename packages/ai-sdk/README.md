@@ -8,7 +8,7 @@
 </p>
 
 > [!NOTE]
-> **Status: `0.2.0` (`0.x`).** Functional and fully tested (100% coverage), and
+> **Status: `0.6.0` (`0.x`).** Functional and fully tested (100% coverage), and
 > usable today — but the public API may still change before `1.0`, so pin a
 > version (per semver, `0.x` minor releases can include breaking changes). See the
 > [support policy](https://nest-native.github.io/ai-sdk/docs/support-policy).
@@ -40,14 +40,25 @@ SDK call.
 
 | Runtime | Supported line |
 | --- | --- |
-| Node.js | `>=22` (required by `ai@7`) |
-| NestJS | `11.x` |
+| Node.js | `>=22` (required by `ai@7`; `>=22.12` with NestJS 12 — see the note below the table) |
+| NestJS (`@nestjs/common`, `@nestjs/core` peers) | `^11.0.0 \|\| ^12.0.0` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity shipped and tested) |
 
 The published package has no runtime dependencies. The Vercel AI SDK and the
 NestJS packages are declared as `peerDependencies`, so applications install only
 the ecosystems they actually use.
+
+Both NestJS majors in that range are tested in CI: the default install runs on
+11, and a dedicated leg installs `@nestjs/*@12`, proves every workspace resolves
+it, and runs the suite and the sample matrix against it.
+
+NestJS 11 runs on any Node.js `>=22`. NestJS 12 ships ESM-only, and a CommonJS
+application loads it through Node's `require(esm)`, which is behind a flag
+before Node.js 22.12.0 — so the 12 end of the range needs Node.js `>=22.12`.
+`engines` stays `>=22` because the 11 end does not need more, and the
+`@nestjs/*@12` packages' own `engines` field (`>= 20`) does not encode that
+floor, so npm will not warn you: run NestJS 12 on a current Node 22 or 24.
 
 ## Installation
 

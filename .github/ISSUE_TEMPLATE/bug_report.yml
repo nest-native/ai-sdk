@@ -38,7 +38,7 @@ body:
     id: nest-version
     attributes:
       label: NestJS version
-      placeholder: "11.x"
+      placeholder: "11.x or 12.x"
     validations:
       required: true
   - type: input

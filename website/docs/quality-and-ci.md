@@ -6,6 +6,16 @@ packages, using `node:test` and `c8`.
 ## Gates
 
 - Package build, typecheck, and tests on Node.js **22** (the supported line).
+- NestJS compatibility matrix (`nestjs-compat`) — each end of the
+  `^11.0.0 || ^12.0.0` peer range installed with `--no-save` on top of the 11
+  lockfile: `11.0.0` pinned exactly (with `@nestjs/platform-fastify@11.0.2`,
+  the first fastify release whose peers admit 11 — the reason is written next
+  to the pin), and `^12`. Each leg requires every workspace to resolve exactly
+  that version with every peer range in the NestJS ecosystem satisfied in the
+  final tree (`scripts/check-nestjs-resolution.mjs`, which catches the peer
+  conflicts npm merely warns about and also runs against the lockfile in
+  `release:check`), then runs the suite and the full sample matrix against it. Both ends of the
+  range are tested claims.
 - Coverage with `c8`, enforced at **100%** for statements, branches, functions,
   and lines on the package source.
 - Cognitive complexity enforced with SonarJS at a threshold of **15** per source

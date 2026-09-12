@@ -17,8 +17,14 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
   explicitly avoiding `@Sse`'s known bugs (`nestjs/nest#12670`: connection
   opens before the handler runs).
 - Current stabilization support line:
-  - Node.js `>=22` (required by `ai@7`)
-  - NestJS `11.x`
+  - Node.js `>=22` (required by `ai@7`; `>=22.12` on the NestJS 12 end: 12 is
+    ESM-only and `require(esm)` is behind a flag before 22.12.0; `engines`
+    stays `>=22` for the 11 end; the `@nestjs/*@12` `engines` field — `>= 20`
+    — does not encode the 12 floor, so every compatibility table states it
+    per end)
+  - NestJS `^11.0.0 || ^12.0.0` — the published peer range. The
+    devDependencies and the lockfile stay on 11 and a dedicated CI leg tests
+    12 (see §12)
   - `ai` (Vercel AI SDK) `^7` — track the current major; adopt new majors
     rather than pinning to an old one. Older majors are not supported; a
     major bump is a deliberate breaking peer change (see §10).
@@ -185,6 +191,25 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 - Regenerate `package-lock.json`. Run `npm run release:check`. Run
   `npm run ci`.
 - Post-publish: re-run full CI with samples pinned to the published version.
+- **Documentation version literals are release-blocking too.** The **Status**
+  line in the root and package READMEs, version badges, the version claims in
+  `CONTRIBUTING.md`, and the compatibility tables must state the shipped version
+  and the declared `engines`/peer ranges. Version drift in prose is the same
+  defect as version drift in a manifest — it is what users actually read — and
+  `release:check:readme-version` (`scripts/check-readme-version.mjs`) enforces
+  it: the Status marker is the one canonical way these docs state their version,
+  so keep stating it that way instead of scattering loose version numbers.
+- **Prefer dynamic badges over hardcoded ones.** A version badge must be the
+  npm shield (`https://img.shields.io/npm/v/<package>.svg`), which can never go
+  stale; hardcoded `img.shields.io/badge/version-…` / `…/badge/status-…`
+  literals are rejected by the check. (A badge that states a non-versioned fact,
+  such as the license or the coverage bar, may stay hardcoded.)
+- **Version-sync checks iterate; they do not hardcode a package name.** A check
+  walks every non-private `packages/*/package.json` and derives names and
+  versions from those manifests, so it keeps working if the workspace ever ships
+  a second package. (`check-sample-version-sync.mjs` predates this rule and
+  still hardcodes the single package name — convert it the next time it is
+  touched.)
 
 ### 11. Cognitive Complexity Review
 
@@ -197,9 +222,83 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 
 ### 12. Accumulated Project Decisions
 
-(Empty at v0; grows as the project lands decisions worth preserving. Append
-entries here when an architectural call repeats or is non-obvious. Each
-entry should be one short paragraph with rationale.)
+Append entries here when an architectural call repeats or is non-obvious. Each
+entry is one short paragraph with rationale.
+
+- **A peer major is widened, not moved (NestJS 12, 2026-09).** When a peer
+  ships a new major, widen the published `peerDependencies` range
+  (`^11.0.0` → `^11.0.0 || ^12.0.0`), keep the `devDependencies` and the
+  lockfile on the older major so the default suite keeps testing it, and add
+  the new end to the `nestjs-compat` CI matrix, which installs each end of
+  the range on top of the lockfile with `--no-save` and runs the suite and
+  the sample matrix against it — so both ends of the range are tested
+  claims. The `11 floor` entry pins `11.0.0` exactly, with the reason next to
+  the pin; the `12` entry floats on `^12.0.0`. A floor is an install-graph
+  fact, not a source fact: `11.0.0` is this package's floor because nothing
+  it uses was added by a later 11.x, but `@nestjs/platform-fastify` 11.0.0
+  and 11.0.1 shipped peering `^10`, so the entry pins fastify at `11.0.2`
+  separately. Such sibling floors are not peer-range corrections — no
+  consumer can reach the versions below them — and the published range
+  changes only if the suite actually fails at a floor. Two details are
+  load-bearing: install with `--workspaces --include-workspace-root` (with
+  `--workspace-root` alone the samples' exact pins win: npm either refuses
+  the tree or nests the old version under each sample, and the sample matrix
+  never runs on the leg's version); and prove the tree with
+  `scripts/check-nestjs-resolution.mjs <spec> [<name>@<spec> ...]`, which
+  requires the *exact* pinned version from inside every workspace (a
+  downgrade that silently no-ops leaves the lockfile's 11.x in place, and
+  "still 11" passes a major check), fails on nested copies, and checks every
+  peer range in the NestJS ecosystem — every installed package at any depth
+  that is `@nestjs/*` or peers on one, this package's own published ranges
+  included — against the tree the suite will run on; the same script runs
+  with no argument in `release:check`, against the lockfile. That final-tree
+  check is the gate because npm gives you nothing better: a peer conflict
+  npm can override is `npm warn ERESOLVE overriding peer dependency` plus
+  exit 0, which neither `npm ls` nor `--strict-peer-deps` reports afterwards
+  — and grepping the install log for that warning was tried and dropped,
+  because npm also prints it for transitional states that end coherent
+  (replacing `@nestjs/*` under a package whose peers admit both majors
+  prints dozens in the sibling repos for a tree the check then proves
+  clean). Never `--legacy-peer-deps` an ERESOLVE away — a refused tree is
+  the finding. Dependabot groups `@nestjs/*` majors for the same reason: the
+  packages peer on each other, so a major that arrives one-package-per-PR
+  cannot even be installed.
+- **The default major flips on a trigger, not per PR.** The devDependencies
+  and the lockfile move from 11 to 12 when either NestJS 12 exceeds 50% of
+  `@nestjs/core`'s weekly downloads or NestJS 11 stops receiving patches,
+  whichever comes first. Read the split from
+  `https://api.npmjs.org/versions/@nestjs%2Fcore/last-week` (on 2026-09-12:
+  11 at 71%, 10 at 19%, 12 at 5%). NestJS has no LTS; the previous major has
+  received patches for roughly a year after the next one shipped. Flipping
+  means the `12` matrix entry becomes the default install, the `11 floor`
+  entry stays, and the standing grouped dependabot PR for the peer set is
+  merged. Until then that PR stays open as the signal that the upgrade is one
+  merge away — a green run is not a reason to merge it.
+- **Dual CommonJS/ESM publishing is a dated non-goal; revisit in 2027.**
+  NestJS 12 is ESM-only and this package is CommonJS: it loads 12 through
+  Node's `require(esm)`, unflagged from 22.12. Every community NestJS library
+  that supports 12 today (nestjs-cls, nestjs-pino, the OpenTelemetry and
+  throttler packages) does the same, and no consumer has asked for ESM
+  output. An ESM or dual build is a breaking change with a real cost and no
+  demonstrated benefit, so do not start one "while at it". Revisit when a
+  consumer cannot load the package, or when those community libraries move.
+- **NestJS 12 is ESM-only — never import a directory index from `@nestjs/*`.**
+  The 12 `exports` map resolves file paths (`./*` → `./*.js`) but no directory
+  indexes, so `@nestjs/common/interfaces` no longer resolves while
+  `@nestjs/common/constants` (a file; the decorator spec imports it) still
+  does. Import from the package roots; a deep *file* path is tolerated only
+  when no root export exists. The `nestjs-compat` matrix's `12` leg runs the
+  suite and the samples against the real 12 exports map, so a directory
+  import cannot land green. (`@nest-native/kafka` and `@nest-native/trpc`, which had such an
+  import, carry a test that scans every `@nestjs/<pkg>/<subpath>` import and
+  asserts it resolves to a file.)
+- **Nothing may assume a cross-provider lifecycle order.** NestJS 12 calls
+  lifecycle hooks (`onModuleInit`, `onApplicationBootstrap`, the shutdown
+  hooks) by component hierarchy level, which changes their execution order
+  when providers or modules depend on one another. The package
+  implements no lifecycle hook today; if it ever does, it must not rely on
+  another provider's hook having run first, and no test may assert a hook
+  order.
 
 ### 13. Mutation testing (Stryker — occasional targeted audit, local only, never in CI)
 

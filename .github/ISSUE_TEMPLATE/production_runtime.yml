@@ -52,7 +52,7 @@ body:
     id: nest-version
     attributes:
       label: NestJS version
-      placeholder: "11.x"
+      placeholder: "11.x or 12.x"
     validations:
       required: true
   - type: input
@@ -73,7 +73,7 @@ body:
     id: adapter
     attributes:
       label: HTTP adapter and version
-      placeholder: "@nestjs/platform-express 11.x or @nestjs/platform-fastify 11.x"
+      placeholder: "@nestjs/platform-express 12.x or @nestjs/platform-fastify 11.x"
     validations:
       required: true
   - type: textarea

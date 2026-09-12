@@ -6,11 +6,10 @@
   <a href="https://www.npmjs.com/package/@nest-native/ai-sdk"><img src="https://img.shields.io/npm/v/@nest-native/ai-sdk.svg" alt="NPM Version" /></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Package License" /></a>
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Test Coverage" />
-  <img src="https://img.shields.io/badge/version-0.2.0-blue.svg" alt="Version: 0.2.0" />
 </p>
 
 > [!NOTE]
-> **Status: `0.2.0` (`0.x`).** Functional and fully tested (100% coverage), and
+> **Status: `0.6.0` (`0.x`).** Functional and fully tested (100% coverage), and
 > usable today — but the public API may still change before `1.0`, so pin a
 > version (per semver, `0.x` minor releases can include breaking changes). See the
 > [support policy](https://nest-native.github.io/ai-sdk/docs/support-policy).
@@ -60,8 +59,8 @@ This package's headline differentiators:
 
 | Runtime | Supported line |
 | --- | --- |
-| Node.js | `>=22` (required by `ai@7`) |
-| NestJS | `11.x` |
+| Node.js | `>=22` (required by `ai@7`; `>=22.12` with NestJS 12 — see the note below the table) |
+| NestJS (`@nestjs/common`, `@nestjs/core` peers) | `^11.0.0 \|\| ^12.0.0` |
 | Vercel AI SDK (`ai`) | `^7` (tracks the current major; older majors not supported) |
 | HTTP adapter | Express and Fastify (parity is a project goal) |
 | Validation | Zod and class-validator, both app-owned |
@@ -69,6 +68,23 @@ This package's headline differentiators:
 The published package keeps `"dependencies": {}`. The Vercel AI SDK and the
 NestJS packages are declared as `peerDependencies`, so applications install only
 the ecosystems they actually use.
+
+Both ends of that range are exercised in CI, not just declared: the default
+install tests the lockfile's 11.x (the devDependencies and the lockfile stay
+on 11 on purpose), and the `nestjs-compat` matrix installs each end on top of
+it with `--no-save` — `11.0.0` pinned exactly, with `@nestjs/platform-fastify`
+at `11.0.2`, the first fastify release whose peers admit 11, and `^12` —
+proves every workspace, the package and all eight samples, resolves exactly
+that, and runs the suite and the full sample matrix against it.
+
+The Node.js floor depends on which end of that range you are on. NestJS 11 runs
+on any Node.js `>=22`. NestJS 12 ships ESM-only, and a CommonJS application
+(the samples here run `ts-node` in CommonJS mode) loads it through Node's
+`require(esm)`, which is behind a flag before Node.js 22.12.0 — so the 12 end
+of the range needs Node.js `>=22.12`. `engines` stays `>=22` because the 11
+end does not need more, and the `@nestjs/*@12` packages' own `engines` field
+(`>= 20`) does not encode that floor, so npm will not warn you: run NestJS 12
+on a current Node 22 or 24.
 
 ## Repository Layout
 
@@ -196,6 +212,12 @@ The repository ships the same review posture as its sibling `@nest-native`
 packages, using `node:test` and `c8`:
 
 - package build, typecheck, and coverage on Node.js 22 (the supported line)
+- NestJS compatibility matrix (`nestjs-compat`): installs each end of the
+  published peer range with `--no-save` on top of the 11 lockfile (`11.0.0`
+  pinned exactly, and `^12`), fails unless every workspace resolves exactly
+  that version with every NestJS-ecosystem peer range satisfied
+  (`scripts/check-nestjs-resolution.mjs`), then runs the suite and the full
+  sample matrix against it
 - coverage with `c8`, enforced at 100% for statements, branches, functions, and lines
 - sticky PR comments for coverage, test performance, and cognitive complexity
 - cognitive complexity enforcement with SonarJS threshold `15`
@@ -220,8 +242,12 @@ Details — including the pre-PR ritual and agent instructions — in
 
 ## Status and Roadmap
 
-The initial `0.x` release covers the surface below, released as `0.2.0` (the
-public API may still change before `1.0`). The path that got here:
+The `0.x` line covers the surface below (the public API may still change before
+`1.0`, so pin a version). The v1 decorator surface — `@AiStream`,
+`@AiAbortSignal`, `@AiContext` — has been complete since the `v0.2` release; the
+releases since then tracked the Vercel AI SDK's majors and added the offline
+testing entrypoint, without changing that decorator surface. The path that got
+here:
 
 1. ~~**Bootstrap** — repo skeleton, empty package, CI green.~~ ✅
 2. ~~`@AiStream` skeleton on Express with a showcase sample.~~ ✅
@@ -232,6 +258,13 @@ public API may still change before `1.0`). The path that got here:
 7. ~~Migration guide from raw `@Res()` piping.~~ ✅
 8. ~~Documentation site. Release `v0.1`.~~ ✅
 9. ~~`@AiContext` — request-scoped context for tool `execute`. Release `v0.2`.~~ ✅
+10. ~~Adopt the AI SDK `v6` major (peer `ai ^6`, samples on `zod ^4`). Release
+    `v0.3`.~~ ✅
+11. ~~Adopt the AI SDK `v7` major (peer `ai ^7`, `@ai-sdk/provider ^4`). Release
+    `v0.4`.~~ ✅
+12. ~~`@nest-native/ai-sdk/testing` — deterministic offline mock language models;
+    supported Node.js line raised to `>=22` to match the AI SDK's own engines.
+    Release `v0.5`.~~ ✅
 
 See [CHANGELOG.md](CHANGELOG.md) for what has landed and the
 [roadmap](https://nest-native.github.io/ai-sdk/docs/roadmap) for the scope
