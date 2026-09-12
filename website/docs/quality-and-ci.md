@@ -10,11 +10,11 @@ packages, using `node:test` and `c8`.
   `^11.0.0 || ^12.0.0` peer range installed with `--no-save` on top of the 11
   lockfile: `11.0.0` pinned exactly (with `@nestjs/platform-fastify@11.0.2`,
   the first fastify release whose peers admit 11 — the reason is written next
-  to the pin), and `^12`. Each leg fails on any peer conflict npm merely warned
-  about, requires every workspace to resolve exactly that version
-  (`scripts/check-nestjs-resolution.mjs`, which also re-checks every `@nestjs/*`
-  peer range in the tree and runs against the lockfile in `release:check`),
-  then runs the suite and the full sample matrix against it. Both ends of the
+  to the pin), and `^12`. Each leg requires every workspace to resolve exactly
+  that version with every peer range in the NestJS ecosystem satisfied in the
+  final tree (`scripts/check-nestjs-resolution.mjs`, which catches the peer
+  conflicts npm merely warns about and also runs against the lockfile in
+  `release:check`), then runs the suite and the full sample matrix against it. Both ends of the
   range are tested claims.
 - Coverage with `c8`, enforced at **100%** for statements, branches, functions,
   and lines on the package source.

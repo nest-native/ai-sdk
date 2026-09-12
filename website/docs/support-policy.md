@@ -42,8 +42,9 @@ against it. The oldest installable 11 graph we run is `11.0.0`, pinned
 exactly, because nothing this package uses was added by a later 11.x — with
 `@nestjs/platform-fastify` at `11.0.2`, the first fastify release whose peers
 admit NestJS 11 (11.0.0 and 11.0.1 were published peering `^10`). The other
-leg floats on `^12.0.0`. Each leg fails on any peer conflict npm merely warned
-about.
+leg floats on `^12.0.0`. Each leg proves every workspace resolves exactly that
+version and that every peer range in the NestJS ecosystem holds in the final
+tree, which catches the peer conflicts npm merely warns about.
 
 Two NestJS 12 changes are worth knowing when you upgrade:
 

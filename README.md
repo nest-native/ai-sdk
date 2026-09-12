@@ -214,8 +214,8 @@ packages, using `node:test` and `c8`:
 - package build, typecheck, and coverage on Node.js 22 (the supported line)
 - NestJS compatibility matrix (`nestjs-compat`): installs each end of the
   published peer range with `--no-save` on top of the 11 lockfile (`11.0.0`
-  pinned exactly, and `^12`), fails on any peer conflict npm merely warned
-  about and unless every workspace resolves exactly that version
+  pinned exactly, and `^12`), fails unless every workspace resolves exactly
+  that version with every NestJS-ecosystem peer range satisfied
   (`scripts/check-nestjs-resolution.mjs`), then runs the suite and the full
   sample matrix against it
 - coverage with `c8`, enforced at 100% for statements, branches, functions, and lines
