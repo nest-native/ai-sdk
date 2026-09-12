@@ -239,20 +239,27 @@ entry is one short paragraph with rationale.
   and 11.0.1 shipped peering `^10`, so the entry pins fastify at `11.0.2`
   separately. Such sibling floors are not peer-range corrections — no
   consumer can reach the versions below them — and the published range
-  changes only if the suite actually fails at a floor. Three details are
+  changes only if the suite actually fails at a floor. Two details are
   load-bearing: install with `--workspaces --include-workspace-root` (with
   `--workspace-root` alone the samples' exact pins win: npm either refuses
   the tree or nests the old version under each sample, and the sample matrix
-  never runs on the leg's version); grep the install log for `ERESOLVE`,
-  because a peer conflict npm can override is a warning plus exit 0 that
-  neither `npm ls` nor `--strict-peer-deps` reports afterwards; and prove the
-  tree with `scripts/check-nestjs-resolution.mjs <spec> [<name>@<spec> ...]`,
-  which requires the *exact* pinned version from inside every workspace (a
+  never runs on the leg's version); and prove the tree with
+  `scripts/check-nestjs-resolution.mjs <spec> [<name>@<spec> ...]`, which
+  requires the *exact* pinned version from inside every workspace (a
   downgrade that silently no-ops leaves the lockfile's 11.x in place, and
-  "still 11" passes a major check), fails on nested copies, and re-checks
-  every `@nestjs/*` peer range in the tree against the hoisted copy — the
-  same script runs with no argument in `release:check`, against the
-  lockfile. Never `--legacy-peer-deps` an ERESOLVE away — a refused tree is
+  "still 11" passes a major check), fails on nested copies, and checks every
+  peer range in the NestJS ecosystem — every installed package at any depth
+  that is `@nestjs/*` or peers on one, this package's own published ranges
+  included — against the tree the suite will run on; the same script runs
+  with no argument in `release:check`, against the lockfile. That final-tree
+  check is the gate because npm gives you nothing better: a peer conflict
+  npm can override is `npm warn ERESOLVE overriding peer dependency` plus
+  exit 0, which neither `npm ls` nor `--strict-peer-deps` reports afterwards
+  — and grepping the install log for that warning was tried and dropped,
+  because npm also prints it for transitional states that end coherent
+  (replacing `@nestjs/*` under a package whose peers admit both majors
+  prints dozens in the sibling repos for a tree the check then proves
+  clean). Never `--legacy-peer-deps` an ERESOLVE away — a refused tree is
   the finding. Dependabot groups `@nestjs/*` majors for the same reason: the
   packages peer on each other, so a major that arrives one-package-per-PR
   cannot even be installed.
