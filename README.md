@@ -69,12 +69,13 @@ The published package keeps `"dependencies": {}`. The Vercel AI SDK and the
 NestJS packages are declared as `peerDependencies`, so applications install only
 the ecosystems they actually use.
 
-Both NestJS majors in that range are exercised in CI, not just declared: the
-default install tests 11 (the devDependencies and the lockfile stay on 11 on
-purpose), and the `nestjs-latest-major` leg installs `@nestjs/*@12` with
-`--no-save`, proves every workspace — the package and all eight samples —
-resolves the 12 major, and runs the suite and the full sample matrix against
-it.
+Both ends of that range are exercised in CI, not just declared: the default
+install tests the lockfile's 11.x (the devDependencies and the lockfile stay
+on 11 on purpose), and the `nestjs-compat` matrix installs each end on top of
+it with `--no-save` — `11.0.0` pinned exactly, with `@nestjs/platform-fastify`
+at `11.0.2`, the first fastify release whose peers admit 11, and `^12` —
+proves every workspace, the package and all eight samples, resolves exactly
+that, and runs the suite and the full sample matrix against it.
 
 The Node.js floor depends on which end of that range you are on. NestJS 11 runs
 on any Node.js `>=22`. NestJS 12 ships ESM-only, and a CommonJS application
@@ -211,10 +212,12 @@ The repository ships the same review posture as its sibling `@nest-native`
 packages, using `node:test` and `c8`:
 
 - package build, typecheck, and coverage on Node.js 22 (the supported line)
-- NestJS 12 compatibility leg (`nestjs-latest-major`): installs `@nestjs/*@12`
-  with `--no-save` on top of the 11 lockfile, fails unless every workspace
-  resolves the 12 major (`scripts/check-resolved-nestjs-major.mjs`), then runs
-  the suite and the full sample matrix against it
+- NestJS compatibility matrix (`nestjs-compat`): installs each end of the
+  published peer range with `--no-save` on top of the 11 lockfile (`11.0.0`
+  pinned exactly, and `^12`), fails on any peer conflict npm merely warned
+  about and unless every workspace resolves exactly that version
+  (`scripts/check-nestjs-resolution.mjs`), then runs the suite and the full
+  sample matrix against it
 - coverage with `c8`, enforced at 100% for statements, branches, functions, and lines
 - sticky PR comments for coverage, test performance, and cognitive complexity
 - cognitive complexity enforcement with SonarJS threshold `15`

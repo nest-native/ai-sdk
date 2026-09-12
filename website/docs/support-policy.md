@@ -26,18 +26,24 @@ loads it through Node's `require(esm)`, which is behind a flag before Node.js
 22.12.0 — so the 12 end of the range needs Node.js `>=22.12`. `engines` stays
 `>=22` because the 11 end does not need more, and the `@nestjs/*@12` packages'
 own `engines` field (`>= 20`) does not encode that floor, so npm never warns
-about it: run NestJS 12 on a current Node 22 or 24. CI's `nestjs-latest-major`
-leg runs on a current 22.x.
+about it: run NestJS 12 on a current Node 22 or 24. CI's NestJS 12 leg runs on
+a current 22.x.
 
 ## NestJS Major Version
 
 The `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express`, and
 `@nestjs/platform-fastify` peers accept `^11.0.0 || ^12.0.0`. Both ends of that
-range are tested claims, not declarations: the default install tests 11 (the
-devDependencies and the lockfile stay on 11 on purpose), and the
-`nestjs-latest-major` CI leg installs `@nestjs/*@12` with `--no-save`, proves
-every workspace — the package and all eight samples — resolves the 12 major,
-and runs the suite and the full sample matrix against it.
+range are tested claims, not declarations: the default install tests the
+lockfile's 11.x (the devDependencies and the lockfile stay on 11 on purpose),
+and the `nestjs-compat` CI matrix installs each end on top of it with
+`--no-save`, proves every workspace — the package and all eight samples —
+resolves exactly that version, and runs the suite and the full sample matrix
+against it. The oldest installable 11 graph we run is `11.0.0`, pinned
+exactly, because nothing this package uses was added by a later 11.x — with
+`@nestjs/platform-fastify` at `11.0.2`, the first fastify release whose peers
+admit NestJS 11 (11.0.0 and 11.0.1 were published peering `^10`). The other
+leg floats on `^12.0.0`. Each leg fails on any peer conflict npm merely warned
+about.
 
 Two NestJS 12 changes are worth knowing when you upgrade:
 
