@@ -65,8 +65,10 @@ something writes it out verbatim:
   sometimes credentials — no matter how conservative your stream mapper is.
 - Logging from inside the `@AiStream` mapper (`onError: (error) => { ... }`)
   hands your logger that same raw error.
-- A pre-stream failure never reaches a mapper at all: it becomes an HTTP error,
-  and Nest's default exception layer logs the stack.
+- An unexpected pre-stream failure — anything that is not an `HttpException`,
+  which is exactly the provider or configuration error that carries
+  credentials — never reaches a mapper at all: Nest's default exception filter
+  turns it into a 500 and logs the error object, stack included.
 
 Client-safe messages and log-safe records are separate concerns, and only the
 first is the package's to solve. Configure structured, redacted error logging in
