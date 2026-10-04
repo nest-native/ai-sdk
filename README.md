@@ -220,7 +220,7 @@ packages, using `node:test` and `c8`:
   sample matrix against it
 - coverage with `c8`, enforced at 100% for statements, branches, functions, and lines
 - sticky PR comments for coverage, test performance, and cognitive complexity
-- cognitive complexity enforcement with SonarJS threshold `15`
+- cognitive complexity enforcement with Biome, threshold `15`
 - package tarball validation and README link validation
 - supply-chain audit for high-severity issues
 
