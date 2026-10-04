@@ -18,7 +18,7 @@ packages, using `node:test` and `c8`.
   range are tested claims.
 - Coverage with `c8`, enforced at **100%** for statements, branches, functions,
   and lines on the package source.
-- Cognitive complexity enforced with SonarJS at a threshold of **15** per source
+- Cognitive complexity enforced with Biome at a threshold of **15** per source
   function.
 - Package tarball validation and README/docs link validation.
 - Sample version sync — every `sample/*` pins `@nest-native/ai-sdk` to the

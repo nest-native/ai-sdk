@@ -223,7 +223,7 @@ enhancer pipeline respects, never hide the AI SDK behind a magic facade.
 
 - When changes touch `packages/ai-sdk/**/*.ts`, run `npm run complexity:check`
   and `npm run complexity:report`.
-- CI enforces SonarJS cognitive-complexity threshold of `15` per package
+- CI enforces a cognitive-complexity threshold of `15`, with Biome (`complexity/noExcessiveCognitiveComplexity`, config in `biome.json`), per package
   source function.
 - Do not reduce complexity by weakening enhancer integration, AbortSignal
   correctness, or test coverage.
