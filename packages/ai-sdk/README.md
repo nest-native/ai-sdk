@@ -327,4 +327,4 @@ byte-identical.
 - Migration guide: [MIGRATION.md](../../MIGRATION.md)
 - Changelog: [CHANGELOG.md](../../CHANGELOG.md)
 - Vercel AI SDK: [ai-sdk.dev](https://ai-sdk.dev)
-- The nest-native family: [@nest-native/drizzle](https://www.npmjs.com/package/@nest-native/drizzle), [@nest-native/trpc](https://www.npmjs.com/package/@nest-native/trpc)
+- The nest-native family: [nest-native.dev](https://nest-native.dev/)
