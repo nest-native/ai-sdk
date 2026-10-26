@@ -44,8 +44,8 @@
     "enabled": false
   },
   "devDependencies": {
-    "@ai-sdk/provider": "^4.0.28",
-    "@biomejs/biome": "^2.5.14",
+    "@ai-sdk/provider": "^4.0.33",
+    "@biomejs/biome": "^2.6.2",
     "@nestjs/common": "^11.2.7",
     "@nestjs/core": "^11.2.7",
     "@nestjs/platform-express": "^11.2.7",
