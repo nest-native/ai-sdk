@@ -6,7 +6,17 @@ This project follows semantic versioning for the published package. Sample,
 documentation, and CI-only changes may remain in `Unreleased` until the next
 package release is useful for users.
 
-## Unreleased
+## 0.6.1 - 2026-11-21
+
+- **Deprecated in favor of the official `@nestjs/ai`.** NestJS now ships its own
+  module for the AI SDK, and it streams answers to the browser on Express,
+  Fastify and the Node adapter, which is what this package was for. This is the
+  last release: the repository is archived and the package is deprecated on
+  npm. Existing installs keep working. `@nestjs/ai` peers NestJS 12 only, so on
+  NestJS 11 an application either stays on 0.6.1 until it upgrades, or pipes the
+  AI SDK's stream from a `@Res()` handler itself. The
+  [migration guide](https://nest-native.dev/ai-sdk/docs/migrate-to-nestjs-ai) maps every API to its replacement and shows both
+  paths. No code change in this release.
 
 - **Dependency advisories, published package unchanged.** The dev tree takes
   `proxy-addr` 2.0.8 (GHSA-jqcg-44mw-7w3h, critical, through Express). In

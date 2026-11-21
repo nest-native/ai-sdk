@@ -1,5 +1,12 @@
 # Migration Guide
 
+:::caution Deprecated
+
+`@nest-native/ai-sdk` is deprecated in favor of the official `@nestjs/ai`, and
+0.6.1 is the last release. See [Migrate to @nestjs/ai](migrate-to-nestjs-ai.md).
+
+:::
+
 The official AI SDK NestJS recipe
 ([`ai-sdk.dev/cookbook/api-servers/nest`](https://ai-sdk.dev/cookbook/api-servers/nest))
 streams by taking over the response with `@Res()` and calling the AI SDK's

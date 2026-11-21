@@ -5,12 +5,13 @@ SDK applications.
 
 ## Supported Versions
 
-Security fixes target the current published package line.
+`@nest-native/ai-sdk` is deprecated in favor of the official
+[`@nestjs/ai`](https://docs.nestjs.com/ai/overview), and this repository is archived: 0.6.1 is the last release, and no
+version receives security fixes.
 
 | Package | Supported |
 | --- | --- |
-| `@nest-native/ai-sdk` latest minor | Yes |
-| Older unpublished branches | No |
+| `@nest-native/ai-sdk`, every version (0.6.1 included) | No: deprecated and archived |
 
 ## Reporting A Vulnerability
 

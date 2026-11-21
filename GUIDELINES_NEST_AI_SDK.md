@@ -1,5 +1,9 @@
 # GUIDELINES_NEST_AI_SDK.md
 
+> **Archived (2026-11-21).** `@nest-native/ai-sdk` is deprecated in favor of
+> the official `@nestjs/ai`; 0.6.1 was the last release. These guidelines are
+> kept as a record of how the package was built.
+
 ## Core Philosophy — This library MUST feel native in NestJS projects
 
 Every decision must follow NestJS philosophy as `@Sse` and standard HTTP

@@ -1,5 +1,12 @@
 # Introduction
 
+:::caution Deprecated
+
+`@nest-native/ai-sdk` is deprecated in favor of the official `@nestjs/ai`, and
+0.6.1 is the last release. See [Migrate to @nestjs/ai](migrate-to-nestjs-ai.md).
+
+:::
+
 `@nest-native/ai-sdk` is a NestJS integration for streaming responses from the
 [Vercel AI SDK](https://ai-sdk.dev). It is a decorator-first, Nest-native
 primitive that replaces the "raw `@Res()` + manual piping" pattern the official
