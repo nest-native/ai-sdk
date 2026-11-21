@@ -42,6 +42,12 @@ const config: Config = {
   ],
 
   themeConfig: {
+    announcementBar: {
+      id: 'deprecated-use-nestjs-ai',
+      content:
+        '@nest-native/ai-sdk is deprecated: NestJS now ships an official AI module. <a href="/ai-sdk/docs/migrate-to-nestjs-ai">Migrate to @nestjs/ai</a>.',
+      isCloseable: false,
+    },
     image: 'img/social-card.png',
     colorMode: {
       respectPrefersColorScheme: true,

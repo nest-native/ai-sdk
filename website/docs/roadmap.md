@@ -1,5 +1,12 @@
 # Roadmap
 
+:::caution Deprecated
+
+`@nest-native/ai-sdk` is deprecated in favor of the official `@nestjs/ai`, and
+0.6.1 is the last release. See [Migrate to @nestjs/ai](migrate-to-nestjs-ai.md).
+
+:::
+
 `@nest-native/ai-sdk` is intentionally narrow. This page records what v1 ships,
 what it deliberately does not, and how the project handles change.
 

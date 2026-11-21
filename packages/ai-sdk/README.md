@@ -7,23 +7,22 @@
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="Package License" /></a>
 </p>
 
-> [!NOTE]
-> **Status: `0.6.0` (`0.x`).** Functional and fully tested (100% coverage), and
-> usable today — but the public API may still change before `1.0`, so pin a
-> version (per semver, `0.x` minor releases can include breaking changes). See the
-> [support policy](https://nest-native.github.io/ai-sdk/docs/support-policy).
-> `@AiStream` streams AI SDK results on
-> **both Express and Fastify** while keeping the Nest enhancer pipeline intact,
-> `@AiAbortSignal` cancels the AI SDK call when the client disconnects mid-stream,
-> `@AiContext` injects request-scoped context (`{ request, response, signal }`) so
-> an AI SDK tool's `execute` closure can reach the current request mid-stream, and
-> pre-stream vs in-stream errors are mapped correctly (HTTP errors vs documented
-> stream error frames). Samples cover `streamText`, `streamObject`, the v5
-> generative-UI equivalent of `streamUI` (custom data parts via
-> `createUIMessageStream`), and request-scoped tool context. A
-> [migration guide](../../MIGRATION.md) ports the official AI SDK NestJS cookbook
-> recipe to `@AiStream`, and full
-> [documentation](https://nest-native.github.io/ai-sdk/) is published.
+> [!CAUTION]
+> **Status: `0.6.1`, the last release. Deprecated.** NestJS now ships an official
+> module for the AI SDK, [`@nestjs/ai`](https://docs.nestjs.com/ai/overview), which streams answers to the browser on
+> Express, Fastify and the Node adapter: what this package was for. This
+> repository is archived and the package is deprecated on npm. Existing installs
+> keep working, but nothing will be fixed.
+>
+> ```bash
+> npm install @nestjs/ai @nestjs/resilience
+> npm uninstall @nest-native/ai-sdk
+> ```
+>
+> `@nestjs/ai` needs NestJS 12. On NestJS 11, stay on 0.6.1 until you upgrade,
+> or drop this package and pipe the AI SDK's stream from a `@Res()` handler. The
+> [migration guide](https://nest-native.dev/ai-sdk/docs/migrate-to-nestjs-ai) maps every API to its replacement and shows both
+> paths.
 
 ## What This Is
 

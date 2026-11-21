@@ -8,23 +8,22 @@
   <img src="https://img.shields.io/badge/coverage-100%25-brightgreen.svg" alt="Test Coverage" />
 </p>
 
-> [!NOTE]
-> **Status: `0.6.0` (`0.x`).** Functional and fully tested (100% coverage), and
-> usable today — but the public API may still change before `1.0`, so pin a
-> version (per semver, `0.x` minor releases can include breaking changes). See the
-> [support policy](https://nest-native.github.io/ai-sdk/docs/support-policy).
-> `@AiStream` streams AI SDK results on
-> **both Express and Fastify** while preserving the full Nest enhancer pipeline,
-> `@AiAbortSignal` cancels the AI SDK call when the client disconnects mid-stream,
-> `@AiContext` injects request-scoped context (`{ request, response, signal }`) so
-> an AI SDK tool's `execute` closure can reach the current request mid-stream,
-> pre-stream vs in-stream errors are mapped correctly, and samples cover
-> `streamText`, `streamObject`, the v5 generative-UI equivalent of `streamUI`, and
-> request-scoped tool context. The workspace builds, typechecks, tests at 100%
-> coverage, and is CI-green. A [migration guide](MIGRATION.md) ports the official
-> AI SDK NestJS cookbook recipe to `@AiStream`, and a
-> [documentation site](https://nest-native.github.io/ai-sdk/) is published from
-> [`website/`](website).
+> [!CAUTION]
+> **Status: `0.6.1`, the last release. Deprecated.** NestJS now ships an official
+> module for the AI SDK, [`@nestjs/ai`](https://docs.nestjs.com/ai/overview), which streams answers to the browser on
+> Express, Fastify and the Node adapter: what this package was for. This
+> repository is archived and the package is deprecated on npm. Existing installs
+> keep working, but nothing will be fixed.
+>
+> ```bash
+> npm install @nestjs/ai @nestjs/resilience
+> npm uninstall @nest-native/ai-sdk
+> ```
+>
+> `@nestjs/ai` needs NestJS 12. On NestJS 11, stay on 0.6.1 until you upgrade,
+> or drop this package and pipe the AI SDK's stream from a `@Res()` handler. The
+> [migration guide](https://nest-native.dev/ai-sdk/docs/migrate-to-nestjs-ai) maps every API to its replacement and shows both
+> paths.
 
 ## What This Is
 
@@ -240,35 +239,11 @@ work without it):
 Details — including the pre-PR ritual and agent instructions — in
 [GUIDELINES_NEST_AI_SDK.md](GUIDELINES_NEST_AI_SDK.md#13-mutation-testing-stryker--local-only-never-in-ci).
 
-## Status and Roadmap
+## Status
 
-The `0.x` line covers the surface below (the public API may still change before
-`1.0`, so pin a version). The v1 decorator surface — `@AiStream`,
-`@AiAbortSignal`, `@AiContext` — has been complete since the `v0.2` release; the
-releases since then tracked the Vercel AI SDK's majors and added the offline
-testing entrypoint, without changing that decorator surface. The path that got
-here:
-
-1. ~~**Bootstrap** — repo skeleton, empty package, CI green.~~ ✅
-2. ~~`@AiStream` skeleton on Express with a showcase sample.~~ ✅
-3. ~~Fastify parity.~~ ✅
-4. ~~`@AiAbortSignal` + real disconnect test.~~ ✅
-5. ~~Pre-stream vs in-stream error mapping.~~ ✅
-6. ~~`streamObject` + `streamUI` samples.~~ ✅
-7. ~~Migration guide from raw `@Res()` piping.~~ ✅
-8. ~~Documentation site. Release `v0.1`.~~ ✅
-9. ~~`@AiContext` — request-scoped context for tool `execute`. Release `v0.2`.~~ ✅
-10. ~~Adopt the AI SDK `v6` major (peer `ai ^6`, samples on `zod ^4`). Release
-    `v0.3`.~~ ✅
-11. ~~Adopt the AI SDK `v7` major (peer `ai ^7`, `@ai-sdk/provider ^4`). Release
-    `v0.4`.~~ ✅
-12. ~~`@nest-native/ai-sdk/testing` — deterministic offline mock language models;
-    supported Node.js line raised to `>=22` to match the AI SDK's own engines.
-    Release `v0.5`.~~ ✅
-
-See [CHANGELOG.md](CHANGELOG.md) for what has landed and the
-[roadmap](https://nest-native.github.io/ai-sdk/docs/roadmap) for the scope
-boundary.
+Deprecated in favor of [`@nestjs/ai`](https://docs.nestjs.com/ai/overview): 0.6.1 is the last release, and this
+repository is archived. The [migration guide](https://nest-native.dev/ai-sdk/docs/migrate-to-nestjs-ai) maps every API to its
+replacement, and [CHANGELOG.md](CHANGELOG.md) records what each release shipped.
 
 ## License
 

@@ -1,5 +1,9 @@
 # Migration guide: from raw `@Res()` piping to `@AiStream`
 
+> [!CAUTION]
+> `@nest-native/ai-sdk` is deprecated in favor of the official `@nestjs/ai`. To
+> move off it, see the [migration guide](https://nest-native.dev/ai-sdk/docs/migrate-to-nestjs-ai).
+
 The official AI SDK NestJS recipe —
 [`ai-sdk.dev/cookbook/api-servers/nest`](https://ai-sdk.dev/cookbook/api-servers/nest)
 — streams by taking over the response with `@Res()` and calling the AI SDK's
